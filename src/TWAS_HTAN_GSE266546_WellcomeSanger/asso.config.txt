@@ -1,0 +1,56 @@
+# ==============================================================================
+# SPrediXcan association configuration
+# HTAN_GSE266546 peakSNP prediction models x CRC GWAS
+#
+# This file is sourced by asso.sh (bash syntax).
+# ==============================================================================
+
+# Software
+SPREDIXCAN="/data/l2_bioinfo1/liq17/biosoft/MetaXcan/software/SPrediXcan.py"
+PYTHON_BIN="python"
+
+# Prediction-model root
+MODEL_ROOT="/data/l2_bioinfo1/liq17/scTWAS/TWAS_HTAN_GSE266546_WellcomeSanger_res"
+##NL
+#MODEL_DATASET_PREFIX="VUMC_HTAN_GSE266546"
+#MODEL_DATASET_PREFIX="WellcomeSanger"
+
+##ADSER
+MODEL_DATASET_PREFIX="VUMC_HTAN"
+MODEL_SUFFIX="peakSNP"
+
+# Models
+TISSUES=("NL" "ADSER")
+NL_CELL_TYPES=("ABS" "CT" "EE" "GOB" "STM" "TAC" "TUF")
+ADSER_CELL_TYPES=("ABS" "CT" "EE" "GOB" "STM" "TAC" "TUF" "ASC" "SSC")
+
+# GWAS cohorts
+COHORTS=("EUR" "Multi")
+
+EUR_GWAS_DIR="/data/l2_bioinfo1/GWAS_SS/BIOVU/CRC/metal/GC_Final/processed/EUR/rsid_annotated_CHRPOS"
+EUR_GWAS_PATTERN='^final_gc_maf0[.]01_CRC_EUR_META_1[.]chr([1-9]|1[0-9]|2[0-2])[.]chrpos[.]rsid[.]assoc[.]dosage[.]gz$'
+
+MULTI_GWAS_DIR="/data/l2_bioinfo1/GWAS_SS/BIOVU/CRC/metal/GC_Final/processed/Multi/rsid_annotated_CHRPOS"
+MULTI_GWAS_PATTERN='^final_gc_maf0[.]01_CRC_Multi_META_1[.]chr([1-9]|1[0-9]|2[0-2])[.]chrpos[.]rsid[.]assoc[.]dosage[.]gz$'
+
+# GWAS columns
+# SNP          = CHR:POS:REF:ALT
+# SNP_CHR_POS  = CHR:POS
+# RSID         = rsID matched to model DB weights
+# A1           = GWAS effect allele
+# A2           = GWAS non-effect allele
+# BETA         = effect size for A1
+# P            = P value
+SNP_COLUMN="RSID"
+EFFECT_ALLELE_COLUMN="A1"
+NON_EFFECT_ALLELE_COLUMN="A2"
+BETA_COLUMN="BETA"
+PVALUE_COLUMN="P"
+
+# Output
+ASSO_OUTPUT_DIR="${MODEL_ROOT}/SPrediXcan_peakSNP_association"
+VERBOSITY=1
+
+# true: skip existing non-empty result CSVs
+# false: rerun and overwrite
+SKIP_EXISTING=true

@@ -1,0 +1,134 @@
+# ==============================================================================
+# Coloc configuration: NL peakSNP TWAS significant genes
+#
+# Run:
+#   Rscript coloc_gwas_xqtl_sigSource_peakSNP.R ABS coloc_peakSNP_NL.config.R
+#   Rscript coloc_gwas_xqtl_sigSource_peakSNP.R all coloc_peakSNP_NL.config.R
+# ==============================================================================
+
+COLOC_CONFIG <- list(
+  analysis_group = "NL",
+
+  cell_types = c("ABS", "CT", "EE", "GOB", "STM", "TAC", "TUF"),
+
+  # One Cauchy-meta significant-gene file per cell type.
+  sig_file_template = paste0(
+    "/v5000/data/l2_bioinfo1/liq17/scTWAS/",
+    "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
+    "SPrediXcan_peakSNP_association/",
+    "Cauchy_Meta_NL_WellcomeSanger_NL_EUR_Multi/",
+    "HTAN_NL_WellcomeSanger_NL_{CT}_peakSNP.",
+    "EUR_Multi.CauchyMeta.sig.csv"
+  ),
+
+  gene_column = "gene",
+
+  sig_flag_columns = c(
+    EUR = "EUR_sig",
+    Multi = "Multi_sig"
+  ),
+
+  # For each significant gene and GWAS cohort, use the eQTL cohort that drove
+  # the Cauchy-meta TWAS P value.
+  source_mode = "p_driven",
+
+  source_columns = list(
+    EUR = "P driven_EUR",
+    Multi = "P driven_Multi"
+  ),
+
+  # ---------------------------------------------------------------------------
+  # CRC GWAS summary statistics
+  # ---------------------------------------------------------------------------
+  gwas = list(
+    EUR = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/GWAS_SS/BIOVU/CRC/metal/GC_Final/",
+        "processed/EUR/rsid_annotated_CHRPOS/",
+        "final_gc_maf0.01_CRC_EUR_META_1.chr{chrom}.",
+        "chrpos.rsid.assoc.dosage.gz"
+      ),
+      rsid_col = "RSID",
+      a1_col = "A1",
+      a2_col = "A2",
+      freq_col = "FRQ",
+      beta_col = "BETA",
+      se_col = "SE",
+      p_col = "P",
+
+      # CRC European GWAS: case 99260	control 1119512	case+control 1218772.
+      N = 1218772,
+      case_fraction = 99260 / 1218772   	
+    ),
+
+    Multi = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/GWAS_SS/BIOVU/CRC/metal/GC_Final/",
+        "processed/Multi/rsid_annotated_CHRPOS/",
+        "final_gc_maf0.01_CRC_Multi_META_1.chr{chrom}.",
+        "chrpos.rsid.assoc.dosage.gz"
+      ),
+      rsid_col = "RSID",
+      a1_col = "A1",
+      a2_col = "A2",
+      freq_col = "FRQ",
+      beta_col = "BETA",
+      se_col = "SE",
+      p_col = "P",
+
+      # CRC multi-ancestry GWAS: case 132261	control 1752398  case+control	1884659.
+      N = 1884659,
+      case_fraction = 132261 / 1884659
+    )
+  ),
+
+  # ---------------------------------------------------------------------------
+  # eQTL sources
+  #
+  # TensorQTL variant_id is expected as:
+  #   rsID;chrom_pos_REF_ALT
+  # and slope / af are ALT-oriented.
+  # ---------------------------------------------------------------------------
+  eqtl_sources = list(
+    WellcomeSanger = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/liq17/scTWAS/data/WellcomeSanger/",
+        "xQTL_WellcomeSanger/",
+        "WellcomeSanger_Healthy_TI_Rectum_{CT}/",
+        "WellcomeSanger_Healthy_TI_Rectum_{CT}.",
+        "cis_qtl_pairs.chr{chrom}.parquet"
+      ),
+      N = 278
+    ),
+
+    VUMC_HTAN_GSE266546 = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/liq17/scTWAS/data/VUMC_HTAN_GSE266546/",
+        "xQTL_HTAN_GSE266546/",
+        "VUMC_HTAN_GSE266546_NL_{CT}/",
+        "VUMC_HTAN_GSE266546_NL_{CT}.",
+        "cis_qtl_pairs.chr{chrom}.parquet"
+      ),
+      N = 103
+    )
+  ),
+
+  gene_annotation =
+    "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf",
+
+  # Preserve the previous coloc design: use eQTL variants within +/-500 kb
+  # of the TSS and require >=50 harmonized overlapping SNPs.
+  flank_length = 500000,
+  min_overlap_snps = 50,
+
+  drop_strand_ambiguous = TRUE,
+
+  # Save variant-level coloc results when H4 reaches this threshold.
+  detail_pph4_threshold = 0.5,
+
+  output_dir = paste0(
+    "/v5000/data/l2_bioinfo1/liq17/scTWAS/",
+    "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
+    "coloc_GWAS_eQTL_sigSource/NL"
+  )
+)

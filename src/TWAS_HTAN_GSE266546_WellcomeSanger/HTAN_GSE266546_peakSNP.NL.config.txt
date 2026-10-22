@@ -1,0 +1,107 @@
+# =============================================================================
+# TWAS configuration
+# Edit this file when switching analysis group, datasets, paths, or parameters.
+# Used by TWAS_modelbuilding.R and WeightsSummaryToDB.R.
+# =============================================================================
+
+TWAS_CONFIG <- list(
+  # ---------------------------------------------------------------------------
+  # Dataset / analysis group
+  # ---------------------------------------------------------------------------
+  dataset_prefix = "VUMC_HTAN_GSE266546",
+  tissue = "NL",  # NL, ADSER
+  peak_cohort = "EUR",  # selects EUR.<peak_annotation>.rsid.txt.gz; change to MULTI if needed
+
+  # Keep separate keys so changing tissue = "NL" -> "ADSER" does not require
+  # editing the R scripts. Update a group's paths below if NL/ADSER use different
+  # inputs in the future.
+  tissues = list(
+    NL = list(
+      work_dir = "/data/l2_bioinfo1/liq17/scTWAS",
+      cell_types = c("ABS", "CT", "EE", "GOB", "STM", "TAC", "TUF"),
+
+      # Genotype-derived master variant annotation produced by
+      # Genotype_vcf_to_traw_HTAN_GSE266546_fixed.sh.
+      # Columns: CHR POS ID REF ALT variant_key.
+      # The R script maps ID->SNP, variant_key->varID, REF->ref, ALT->effect,
+      # so every elastic-net beta is explicitly oriented to VCF ALT.
+      snp_annotation_template = "{work_dir}/data/VUMC_HTAN_GSE266546/genotype/VUMC_HTAN_GSE266546/R03/qc/chr{chrom}.HTAN_GSE266546.variant_key.tsv",
+
+      # Peaks_annotate_variants_config.py output.
+      # {tissue} + {CT} -> e.g. NL_ABS or ADSER_CT.
+      peak_annotation_template = "{tissue}_{CT}",
+      peak_snp_rsid_template = "/data/l2_bioinfo1/liq17/scTWAS/snp_used/GWAS_peak_variant_annotation/{peak_cohort}.{peak_annotation}.rsid.txt.gz"
+    )
+  ),
+
+  # ---------------------------------------------------------------------------
+  # File/path templates
+  # Available placeholders: {work_dir}, {dataset_prefix}, {tissue}, {CT}, {chrom}, {peak_cohort}, {peak_annotation}
+  # ---------------------------------------------------------------------------
+  paths = list(
+    # PEER residual expression file. Its sample labels may be expression_id.
+    # TWAS_modelbuilding.R renames expression_id -> genotype_id using covariate_file.
+    expression_template = "{work_dir}/data/VUMC_HTAN_GSE266546/expression/pseudobulk_expression_for_peer/{CT}/PEER_{CT}/pseudobulk_counts_{CT}.tpmlog2.qc.qn.rmlowcounts.inv.PEER_residuals.expression_id.csv.gz",
+
+    # PLINK --recode A-transpose output. Sample IDs are read directly from .traw.
+    genotype_template = "{work_dir}/data/VUMC_HTAN_GSE266546/genotype/VUMC_HTAN_GSE266546/R03/06_traw/chr{chrom}.HTAN_GSE266546.qc.rsid.traw",
+
+    # One config-specific covariate/sample-mapping file per TWAS model dataset.
+    # Required columns are defined below in sample_mapping.
+    covariate_file = "{work_dir}/data/VUMC_HTAN_GSE266546/genotype/HTAN_GSE266546_N103_age_sex_tissue_geno5PCs.csv",
+
+    gene_annotation = "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf",
+    helper_functions = "/data/l2_bioinfo1/liq17/LQ_frameworks/GenoPhenoBasic.R",
+    output_dir_template = "{work_dir}/TWAS_HTAN_GSE266546_WellcomeSanger_res/{dataset_prefix}_{tissue}_{CT}_peakSNP"
+  ),
+
+  # Naming template shared by model building and summary/DB generation.
+  model_prefix_template = "{dataset_prefix}_{tissue}_{CT}_peakSNP",
+
+  # ---------------------------------------------------------------------------
+  # Model parameters
+  # ---------------------------------------------------------------------------
+  model = list(
+    maf = 0.05,
+    n_times = 3,
+    n_k_folds = 10,
+    cis_window = 1000000,
+    alpha = 0.5,
+    seed = 20260825,
+    min_common_samples = 80,
+    min_cis_snps = 2
+  ),
+
+  chromosomes = 1:22,
+
+  # ---------------------------------------------------------------------------
+  # Expression/genotype sample mapping
+  # ---------------------------------------------------------------------------
+  sample_mapping = list(
+    expression_id_col = "expression_id",
+    genotype_id_col = "genotype_id",
+
+    # Samples absent from the config-specific covariate file are excluded.
+    # The covariate file therefore defines the eligible TWAS model-building set.
+    drop_unmapped_expression = TRUE
+  ),
+
+  # ---------------------------------------------------------------------------
+  # PLINK .traw settings
+  # ---------------------------------------------------------------------------
+  traw = list(
+    # PLINK .traw columns before the sample columns.
+    fixed_columns = c("CHR", "SNP", "(C)M", "POS", "COUNTED", "ALT"),
+
+    # auto: first try exact sample ID, then FID_IID forms such as ID_ID or X_ID.
+    sample_id_mode = "auto",
+
+    # Align dosage to the peak-filtered master snp_annotation$effect. If COUNTED == ref and ALT == effect,
+    # dosage is flipped to 2-dosage. Allele-mismatched variants are dropped.
+    align_to_effect_allele = TRUE,
+
+    # To preserve the behavior of the older reader, variants with missing
+    # genotype values are removed before MAF filtering.
+    drop_variants_with_missing = TRUE
+  )
+)

@@ -1,0 +1,124 @@
+# ==============================================================================
+# Coloc configuration: ADSER peakSNP TWAS significant genes
+#
+# Run:
+#   Rscript coloc_gwas_xqtl_sigSource_peakSNP.R ABS coloc_peakSNP_ADSER.config.R
+#   Rscript coloc_gwas_xqtl_sigSource_peakSNP.R SSC coloc_peakSNP_ADSER.config.R
+#   Rscript coloc_gwas_xqtl_sigSource_peakSNP.R all coloc_peakSNP_ADSER.config.R
+# ==============================================================================
+
+COLOC_CONFIG <- list(
+  analysis_group = "ADSER",
+
+  cell_types = c(
+    "ABS", "CT", "EE", "GOB", "STM", "TAC", "TUF", "ASC", "SSC"
+  ),
+
+  # Per-cell-type ADSER EUR/Multi significant-gene file.
+  sig_file_template = paste0(
+    "/v5000/data/l2_bioinfo1/liq17/scTWAS/",
+    "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
+    "SPrediXcan_peakSNP_association/",
+    "VUMC_HTAN_ADSER_EUR_Multi_sig/",
+    "VUMC_HTAN_ADSER_{CT}_peakSNP.",
+    "EUR_Multi.sig.csv"
+  ),
+
+  gene_column = "gene",
+
+  sig_flag_columns = c(
+    EUR = "EUR_sig",
+    Multi = "Multi_sig"
+  ),
+
+  # ADSER prediction models are VUMC HTAN models, so both EUR and Multi GWAS
+  # significant genes are coloc-tested against the matching HTAN ADSER eQTL.
+  source_mode = "fixed",
+  fixed_eqtl_source = "VUMC_HTAN",
+
+  source_columns = list(),
+
+  # ---------------------------------------------------------------------------
+  # CRC GWAS summary statistics
+  # ---------------------------------------------------------------------------
+  gwas = list(
+    EUR = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/GWAS_SS/BIOVU/CRC/metal/GC_Final/",
+        "processed/EUR/rsid_annotated_CHRPOS/",
+        "final_gc_maf0.01_CRC_EUR_META_1.chr{chrom}.",
+        "chrpos.rsid.assoc.dosage.gz"
+      ),
+      rsid_col = "RSID",
+      a1_col = "A1",
+      a2_col = "A2",
+      freq_col = "FRQ",
+      beta_col = "BETA",
+      se_col = "SE",
+      p_col = "P",
+      # CRC European GWAS: case 99260	control 1119512	case+control 1218772.
+      N = 1218772,
+      case_fraction = 99260 / 1218772   	
+    ),
+
+    Multi = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/GWAS_SS/BIOVU/CRC/metal/GC_Final/",
+        "processed/Multi/rsid_annotated_CHRPOS/",
+        "final_gc_maf0.01_CRC_Multi_META_1.chr{chrom}.",
+        "chrpos.rsid.assoc.dosage.gz"
+      ),
+      rsid_col = "RSID",
+      a1_col = "A1",
+      a2_col = "A2",
+      freq_col = "FRQ",
+      beta_col = "BETA",
+      se_col = "SE",
+      p_col = "P", 
+      # CRC multi-ancestry GWAS: case 132261	control 1752398  case+control	1884659.
+      N = 1884659,
+      case_fraction = 132261 / 1884659
+    )
+  ),
+
+  # ---------------------------------------------------------------------------
+  # HTAN ADSER eQTL
+  #
+  # Examples:
+  #   .../VUMC_HTAN_ADSER_ABS/
+  #       VUMC_HTAN_ADSER_ABS.cis_qtl_pairs.chr10.parquet
+  #
+  #   .../VUMC_HTAN_ADSER_SSC/
+  #       VUMC_HTAN_ADSER_SSC.cis_qtl_pairs.chr10.parquet
+  #
+  # N is set to NA so the R runner infers the actual tensorQTL N from
+  # ma_count + af. This is important for smaller ASC/SSC subsets.
+  # ---------------------------------------------------------------------------
+  eqtl_sources = list(
+    VUMC_HTAN = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/liq17/scTWAS/data/VUMC_HTAN/",
+        "xQTL_VUMC_HTAN/",
+        "VUMC_HTAN_ADSER_{CT}/",
+        "VUMC_HTAN_ADSER_{CT}.",
+        "cis_qtl_pairs.chr{chrom}.parquet"
+      ),
+      N = NA_real_
+    )
+  ),
+
+  gene_annotation =
+    "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf",
+
+  flank_length = 500000,
+  min_overlap_snps = 50,
+
+  drop_strand_ambiguous = TRUE,
+  detail_pph4_threshold = 0.5,
+
+  output_dir = paste0(
+    "/v5000/data/l2_bioinfo1/liq17/scTWAS/",
+    "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
+    "coloc_GWAS_eQTL_sigSource/VUMC_HTAN_ADSER"
+  )
+)

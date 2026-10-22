@@ -1,0 +1,10 @@
+CellType	Num_peaks_Normal	Normal_peak_source	Median_Normal_peak_length_bp	Mean_Normal_peak_length_bp	Num_peaks_Adenoma	Num_peaks_Serrated	Num_Adenoma_peaks_overlapping_Serrated	Pct_Adenoma_peaks_overlapping_Serrated	Num_Serrated_peaks_overlapping_Adenoma	Pct_Serrated_peaks_overlapping_Adenoma	Num_regions_after_chain_merge	Median_chain_merged_region_length_bp	Mean_chain_merged_region_length_bp
+ABS	49520	full_clean	332.0	460.66	200168	158605	148047	73.96	137465	86.67	159091	353	548.65
+CT	59980	full_clean	358.0	501.48	47705	49158	26022	54.55	28189	57.34	66141	233	313.47
+EE	49650	full_clean	301.0	448.31	34185	61321	26623	77.88	33510	54.65	55938	255.0	376.82
+GOB	133221	full_clean	452	720.41	131055	80001	80880	61.71	66438	83.05	111867	335	485.89
+STM	176476	full_clean	612.0	1022.64	132454	73387	80423	60.72	66492	90.60	105628	355.0	516.30
+TAC	3742	stable2of3	228.0	259.83	61155	81031	41219	67.40	45091	55.65	92183	247	345.65
+TUF	55454	full_clean	350.0	481.11	13415	7433	4570	34.07	4564	61.40	16018	244.0	292.87
+ASC	NA	NA	NA	NA	28652	NA	NA	NA	NA	NA	28652	292.0	366.15
+SSC	NA	NA	NA	NA	NA	13061	NA	NA	NA	NA	13061	202	242.66

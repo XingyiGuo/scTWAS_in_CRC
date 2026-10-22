@@ -1,0 +1,111 @@
+# =============================================================================
+# TWAS configuration: WellcomeSanger NL peakSNP models
+# Used by TWAS_modelbuilding_scTWAS.R and WeightsSummaryToDB_peakSNP*.R
+# =============================================================================
+
+TWAS_CONFIG <- list(
+  # ---------------------------------------------------------------------------
+  # Dataset / analysis group
+  # ---------------------------------------------------------------------------
+  dataset_prefix = "WellcomeSanger",
+  tissue = "NL",
+  peak_cohort = "EUR",
+
+  tissues = list(
+    NL = list(
+      work_dir = "/data/l2_bioinfo1/liq17/scTWAS",
+      cell_types = c("ABS", "CT", "EE", "GOB", "STM", "TAC", "TUF"),
+
+      # Generated with the WellcomeSanger genotype processing workflow.
+      # Columns: CHR POS ID REF ALT variant_key
+      snp_annotation_template = paste0(
+        "{work_dir}/data/WellcomeSanger/genotype/",
+        "Healthy_TI_Rectum_N278_genotype/qc/",
+        "chr{chrom}.Healthy_TI_rectum.variant_key.tsv"
+      ),
+
+      # Cell-type-specific peak SNP list, e.g. EUR.NL_ABS.rsid.txt.gz
+      peak_annotation_template = "{tissue}_{CT}",
+      peak_snp_rsid_template = paste0(
+        "{work_dir}/snp_used/GWAS_peak_variant_annotation/",
+        "{peak_cohort}.{peak_annotation}.rsid.txt.gz"
+      )
+    )
+  ),
+
+  # ---------------------------------------------------------------------------
+  # File/path templates
+  # ---------------------------------------------------------------------------
+  paths = list(
+    expression_template = paste0(
+      "{work_dir}/data/WellcomeSanger/expression/",
+      "Healthy_TI_then_rectum_278samples_outputs_LauLabel/",
+      "pseudobulk_Epithelial_LauLabel_x_individual/",
+      "processed_expression/PEER_{CT}/",
+      "{CT}.TPM.log2.QN.INV.PEER_residuals.csv.gz"
+    ),
+
+    genotype_template = paste0(
+      "{work_dir}/data/WellcomeSanger/genotype/",
+      "Healthy_TI_Rectum_N278_genotype/06_traw/",
+      "chr{chrom}.Healthy_TI_rectum.qc.rsid.traw"
+    ),
+
+    covariate_file = paste0(
+      "{work_dir}/data/WellcomeSanger/genotype/",
+      "Healthy_TI_Rectum_N278_age_sex_tissue_geno5PCs.csv"
+    ),
+
+    gene_annotation =
+      "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf",
+
+    helper_functions =
+      "/data/l2_bioinfo1/liq17/LQ_frameworks/GenoPhenoBasic.R",
+
+    output_dir_template = paste0(
+      "{work_dir}/TWAS_HTAN_GSE266546_WellcomeSanger_res/",
+      "{dataset_prefix}_{tissue}_{CT}_peakSNP"
+    )
+  ),
+
+  # ---------------------------------------------------------------------------
+  # Naming shared by model building and DB generation
+  # ---------------------------------------------------------------------------
+  model_prefix_template = "{dataset_prefix}_{tissue}_{CT}_peakSNP",
+
+  # ---------------------------------------------------------------------------
+  # Model parameters
+  # ---------------------------------------------------------------------------
+  model = list(
+    maf = 0.05,
+    n_times = 3,
+    n_k_folds = 10,
+    cis_window = 1000000,
+    alpha = 0.5,
+    seed = 20260825,
+    min_common_samples = 250,
+    min_cis_snps = 2
+  ),
+
+  chromosomes = 1:22,
+
+  # ---------------------------------------------------------------------------
+  # Expression/genotype sample mapping
+  # WellcomeSanger PEER residuals and genotype use individual_id.
+  # ---------------------------------------------------------------------------
+  sample_mapping = list(
+    expression_id_col = "individual_id",
+    genotype_id_col = "individual_id",
+    drop_unmapped_expression = TRUE
+  ),
+
+  # ---------------------------------------------------------------------------
+  # PLINK .traw settings
+  # ---------------------------------------------------------------------------
+  traw = list(
+    fixed_columns = c("CHR", "SNP", "(C)M", "POS", "COUNTED", "ALT"),
+    sample_id_mode = "auto",
+    align_to_effect_allele = TRUE,
+    drop_variants_with_missing = TRUE
+  )
+)

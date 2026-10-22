@@ -1,0 +1,135 @@
+# ==============================================================================
+# SMR + HEIDI configuration: ADSER peakSNP-TWAS significant genes
+#
+# Design:
+#   * build SMR/HEIDI tasks directly from ADSER TWAS-significant genes
+#   * gene cis region = TSS +/- 500 kb
+#   * use the same EUR/Multi GWAS and HTAN ADSER eQTL as coloc
+#   * target SNP = SNP with the smallest eQTL p-value among harmonized
+#                  GWAS x eQTL overlapping SNPs in the +/-500-kb region
+#   * SMR is run with --target-snp so the selected target is forced
+#
+# Prepare:
+#   Rscript prepare_SMR_HEIDI_inputs_targetTopEQTL_500kb.R all \
+#     SMR_HEIDI_ADSER_targetTopEQTL_500kb.config.R
+#
+# Run:
+#   bash run_SMR_HEIDI_targetTopEQTL_500kb.sh \
+#     <output_dir>/SMR_HEIDI.ADSER.all_requested_tasks.manifest.tsv
+# ==============================================================================
+
+SMR_CONFIG <- list(
+  analysis_group = "ADSER",
+
+  cell_types = c(
+    "ABS", "CT", "EE", "GOB", "STM", "TAC", "TUF", "ASC", "SSC"
+  ),
+
+  # Gene-level ADSER TWAS significant-gene input, one file per cell type.
+  # The 9-cell-type *_sig_summary_*.csv is a count/QC summary only and is
+  # therefore NOT used to generate gene-level SMR/HEIDI tasks.
+  twas_sig_file_template = paste0(
+    "/data/l2_bioinfo1/liq17/scTWAS/",
+    "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
+    "SPrediXcan_peakSNP_association/",
+    "VUMC_HTAN_ADSER_EUR_Multi_sig/",
+    "VUMC_HTAN_ADSER_{CT}_peakSNP.EUR_Multi.sig.csv"
+  ),
+
+  gene_column = "gene",
+
+  sig_flag_columns = c(
+    EUR = "EUR_sig",
+    Multi = "Multi_sig"
+  ),
+
+  # Both EUR and Multi TWAS-significant genes use the matching HTAN ADSER eQTL.
+  source_mode = "fixed",
+  fixed_eqtl_source = "VUMC_HTAN",
+
+  source_columns = list(),
+
+  gwas = list(
+    EUR = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/GWAS_SS/BIOVU/CRC/metal/GC_Final/",
+        "processed/EUR/rsid_annotated_CHRPOS/",
+        "final_gc_maf0.01_CRC_EUR_META_1.chr{chrom}.",
+        "chrpos.rsid.assoc.dosage.gz"
+      ),
+      rsid_col = "RSID",
+      a1_col = "A1",
+      a2_col = "A2",
+      freq_col = "FRQ",
+      beta_col = "BETA",
+      se_col = "SE",
+      p_col = "P",
+      N = 1218772
+    ),
+
+    Multi = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/GWAS_SS/BIOVU/CRC/metal/GC_Final/",
+        "processed/Multi/rsid_annotated_CHRPOS/",
+        "final_gc_maf0.01_CRC_Multi_META_1.chr{chrom}.",
+        "chrpos.rsid.assoc.dosage.gz"
+      ),
+      rsid_col = "RSID",
+      a1_col = "A1",
+      a2_col = "A2",
+      freq_col = "FRQ",
+      beta_col = "BETA",
+      se_col = "SE",
+      p_col = "P",
+      N = 1884659
+    )
+  ),
+
+  eqtl_sources = list(
+    VUMC_HTAN = list(
+      file_template = paste0(
+        "/data/l2_bioinfo1/liq17/scTWAS/data/VUMC_HTAN/",
+        "xQTL_VUMC_HTAN/",
+        "VUMC_HTAN_ADSER_{CT}/",
+        "VUMC_HTAN_ADSER_{CT}.",
+        "cis_qtl_pairs.chr{chrom}.parquet"
+      ),
+      N = NA_real_,
+      pgen_dirs = c(
+        "/data/l2_bioinfo1/liq17/scTWAS/data/VUMC_HTAN/genotype/plinkformat/geno_for_tensorqtl"
+      ),
+      pfile_template = paste0(
+        "/data/l2_bioinfo1/liq17/scTWAS/data/VUMC_HTAN/",
+        "genotype/plinkformat/geno_for_tensorqtl/",
+        "COLONMAP_95.chr{chrom}.nodup.maf001.rs.tensorqtl"
+      )
+    )
+  ),
+
+  gene_annotation =
+    "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf",
+
+  flank_length = 500000L,
+  min_overlap_snps = 3L,
+  drop_strand_ambiguous = TRUE,
+
+  smr = list(
+    peqtl_smr = 5e-8,
+    peqtl_heidi = 1.57e-3,
+    heidi_mtd = 1L,
+    heidi_min_m = 3L,
+    heidi_max_m = 20L,
+    ld_lower_limit = 0.05,
+    ld_upper_limit = 0.9,
+    maf = 0.01,
+    diff_freq = 0.20,
+    diff_freq_prop = 0.05,
+    thread_num = 8L
+  ),
+
+  output_dir = paste0(
+    "/v5000/data/l2_bioinfo1/liq17/scTWAS/",
+    "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
+    "SMR_HEIDI_GWAS_eQTL_sigSource/HTAN_ADSER_targetTopEQTL_500kb"
+  )
+)

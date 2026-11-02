@@ -1,9 +1,9 @@
 path,section,type,bytes,md5
 .gitignore,.gitignore,other,245,8d2d01b4d2ab5208713ba4a795d56a17
-.zenodo.json,.zenodo.json,JSON,4604,df073eab272266c40a5d7b5bce9eca9e
+.zenodo.json,.zenodo.json,JSON,4968,6d233ba73d31d7e878e95d54ec58a7a7
 CITATION.cff,CITATION.cff,citation,3348,059d00c0b2add8adf943e809b1a7be8e
 LICENSE,LICENSE,other,1168,17e29aaafbdd959778751cf633cf7d70
-README.md,README.md,markdown,5723,81b94aba5b51f0047c7405cbb05d65d8
+README.md,README.md,markdown,5947,d8573cd4383245522edaea368172a01b
 code/01_single_cell_and_xqtl/README.md,code,markdown,18415,2ec65944c6449d348cf9cd5c09b666d9
 code/01_single_cell_and_xqtl/cohort_metadata/cells_per_sample_by_celltype.R,code,R,24962,6c2975d05bd1a8fb9ba730611ee9ec12
 code/01_single_cell_and_xqtl/cohort_metadata/check_sample_cells_ADSER.R,code,R,10688,e2c530c6c4194f98659e17c81851d9d2
@@ -252,8 +252,8 @@ code/lib/QTLS/phenotype.py,code,Python,6780,5bf9668a5618d1cba23ffbec4b3820c8
 code/lib/README.md,code,markdown,1675,a77b15993cb2ce9f55c7687d2eb662bb
 code/manuscript_text/README.md,code,markdown,1910,d83de77fd954e6d35006ae00253128f8
 code/manuscript_text/build_GWAS_meta_NG.py,code,Python,47614,9215676da2b2169fd21de46b22e6fb0f
-data/GWAS_SS/README.md,data,markdown,910,8dcb69b421ed12e8721549cbbd90c612
-data/README.md,data,markdown,2241,e9ae2111b9a37813aeb788957a537876
+data/GWAS_SS/README.md,data,markdown,1240,b7ad1e3705e8b20b0894410172274ddc
+data/README.md,data,markdown,2575,a4a3a4959b42b0c590daab4015f2b8d7
 data/scATAC-seq/peak_calling_summaries/ABS.chaining_merge.counts.tsv,data,TSV,62,d645e9ee33b37eca8122160afa11378e
 data/scATAC-seq/peak_calling_summaries/Adenoma_ABS.robust.counts.tsv,data,TSV,54,6ec8c35d95f6e8182a6a75fd0610e618
 data/scATAC-seq/peak_calling_summaries/Adenoma_ASC.robust.counts.tsv,data,TSV,54,2586b19fa9609340028de26501dd48ae
@@ -305,10 +305,125 @@ data/scATAC-seq/used_peaks/normal/VUMC_GSE201336_Normal_STM.chaining_merge.bed,d
 data/scATAC-seq/used_peaks/normal/VUMC_GSE201336_Normal_TAC.chaining_merge.bed,data,BED,3574258,fba5853c424727687d3adf6f81fb62fe
 docs/data_flow.md,docs,markdown,8581,c7f715bab54fdb356a637897af6b1fc3
 docs/figure_table_map.md,docs,markdown,4437,8e9cf78f57879551882171f28ca76984
-docs/known_gaps.md,docs,markdown,3580,2b72ab5b7041790fc81121c1eca575c4
+docs/known_gaps.md,docs,markdown,5222,59926ebf1377920aff0ba42eafd6f3c7
 docs/workflow.md,docs,markdown,7354,1c1564c0574ddd1fc00f8c2842e3797e
 env/external_tools.md,env,markdown,1181,f359f81884fe298303172d3a3050dcdd
 env/python_requirements.txt,env,config/text,462,d495610931f06abcf1d8d258fbe6a5a9
-env/r_packages.txt,env,config/text,1125,8bf2ed25213cfb8f0ae731eb0b83bf12
+env/r_packages.txt,env,config/text,1227,e8688cce42d4a597f699099889b5b09d
 env/renv_GSE201336_scATAC.lock,env,renv lockfile,53453,81b0381a7cb24cea3bc830c0c329a811
+res/CRC_GWAS_SS/CRC_238signals_plus_additional_EUR_MULTI_loci.csv,res,CSV,27891,c952f332d3e9cc3402db73f5492b6543
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr1.chrpos.rsid.assoc.dosage.gz,res,gzip,21797538,602b170ba9bb44aebb060cafcad24ef7
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr10.chrpos.rsid.assoc.dosage.gz,res,gzip,14271542,34b26dbe8d0cef3138aacc1cdb800bfd
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr11.chrpos.rsid.assoc.dosage.gz,res,gzip,13687870,33d440ef69e1568d26ad27037ff14ced
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr12.chrpos.rsid.assoc.dosage.gz,res,gzip,13600876,959b85d66f9335c2b146ef40c76d2840
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr13.chrpos.rsid.assoc.dosage.gz,res,gzip,10193011,ac5fa1773efd927f1bfe0816de77bced
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr14.chrpos.rsid.assoc.dosage.gz,res,gzip,9256212,322f6127de5c2fd3200d304ee70936cc
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr15.chrpos.rsid.assoc.dosage.gz,res,gzip,8249102,5ebee8d7389179eafd1cee2d071b8c09
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr16.chrpos.rsid.assoc.dosage.gz,res,gzip,8837413,3df530108e01de84dfe34c5043ac3c76
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr17.chrpos.rsid.assoc.dosage.gz,res,gzip,7899665,236ef297507cba63beefb7d81db2ca81
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr18.chrpos.rsid.assoc.dosage.gz,res,gzip,7958576,0312c5742d02fe7af022aa1f38b6ede5
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr19.chrpos.rsid.assoc.dosage.gz,res,gzip,6831768,bb31c3baa40fbbfb2010fe7680c2d9cd
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr2.chrpos.rsid.assoc.dosage.gz,res,gzip,23364485,4273b02acecec7073c6243d4aa921050
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr20.chrpos.rsid.assoc.dosage.gz,res,gzip,6286552,42e2350ebe3290de835129c553a8dbc1
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr21.chrpos.rsid.assoc.dosage.gz,res,gzip,3859870,6b78369d5e71328dbfe4196d40b7f5d5
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr22.chrpos.rsid.assoc.dosage.gz,res,gzip,4053040,7cba0555e576afc6fd2f3c1b8db9d9b4
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr3.chrpos.rsid.assoc.dosage.gz,res,gzip,19542083,cf4bc472b725bb9c3da498aafc668600
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr4.chrpos.rsid.assoc.dosage.gz,res,gzip,20058195,d53014899156b67a2f4174f2d7c1d164
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr5.chrpos.rsid.assoc.dosage.gz,res,gzip,17792920,7e5e598af63684433ef07eaded4859f1
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr6.chrpos.rsid.assoc.dosage.gz,res,gzip,18512068,d9e4b3dd3410117c7b336465e2be11bc
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr7.chrpos.rsid.assoc.dosage.gz,res,gzip,16573582,162fbbddea3c169734833dd47a945118
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr8.chrpos.rsid.assoc.dosage.gz,res,gzip,14994586,0be4963c3f4bd324c444978f64fea459
+res/CRC_GWAS_SS/EUR/final_gc_maf0.01_CRC_EUR_META_1.chr9.chrpos.rsid.assoc.dosage.gz,res,gzip,12233879,e60d934637e68a5968e4b20d0c2a0e6d
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr1.chrpos.rsid.assoc.dosage.gz,res,gzip,42061856,b32028289b11be3f1bef46c737886ee7
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr10.chrpos.rsid.assoc.dosage.gz,res,gzip,26723368,3027e329c524d17ccb3de1eb6ff21cb5
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr11.chrpos.rsid.assoc.dosage.gz,res,gzip,26106738,040e10baaa5c0245a1f2fab08e20f48f
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr12.chrpos.rsid.assoc.dosage.gz,res,gzip,25665287,11e7b487236ce16543fe59fc802986cd
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr13.chrpos.rsid.assoc.dosage.gz,res,gzip,19060506,257e36aca140ace43b9610958e13fdf8
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr14.chrpos.rsid.assoc.dosage.gz,res,gzip,17376455,56319338fb0f574e4d2ae5a1e0324846
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr15.chrpos.rsid.assoc.dosage.gz,res,gzip,15819528,fcc607befd0d2c18ae47403fee10c009
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr16.chrpos.rsid.assoc.dosage.gz,res,gzip,16974345,77a39e30f5ebfc451cb4ddcc04b00797
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr17.chrpos.rsid.assoc.dosage.gz,res,gzip,15298220,ce3614990b32fb49cb7b7a1de58c94be
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr18.chrpos.rsid.assoc.dosage.gz,res,gzip,15076186,0adac6e1f38d38c5dd659fdcd28bb9d8
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr19.chrpos.rsid.assoc.dosage.gz,res,gzip,12649319,191d590d41bbe848ff55210adc404d3d
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr2.chrpos.rsid.assoc.dosage.gz,res,gzip,44839368,86e1e0857ddef00ecf6aac25044ead4b
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr20.chrpos.rsid.assoc.dosage.gz,res,gzip,12045811,40c909e89a92ca3d3aa429a818745e0b
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr21.chrpos.rsid.assoc.dosage.gz,res,gzip,7350172,20675db5b52c978cccdcff40c942cf60
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr22.chrpos.rsid.assoc.dosage.gz,res,gzip,7603345,f3a0652c3148f3aa11ecfdbec8626703
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr3.chrpos.rsid.assoc.dosage.gz,res,gzip,37602860,a4fac84a282c3eac11d78f3ca93ca238
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr4.chrpos.rsid.assoc.dosage.gz,res,gzip,38011968,846d199dd09e880fcfdb65f6fbd24934
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr5.chrpos.rsid.assoc.dosage.gz,res,gzip,34336733,107206d1a295a2c320327fc19a526cdb
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr6.chrpos.rsid.assoc.dosage.gz,res,gzip,33913583,c07508d6601c4f206c878c0bbd9ce051
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr7.chrpos.rsid.assoc.dosage.gz,res,gzip,31494074,e7681e3f52fdf4cdf8ba4363f24ec54d
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr8.chrpos.rsid.assoc.dosage.gz,res,gzip,29103405,dca71d803580b401601dfc236ec8a815
+res/CRC_GWAS_SS/Multi/final_gc_maf0.01_CRC_Multi_META_1.chr9.chrpos.rsid.assoc.dosage.gz,res,gzip,23230497,2118c9e93c896f58ba3b36abb2ef59af
+res/README.md,res,markdown,1213,f814dc014bf0aef6f25fe50e216b110c
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_ABS_peakSNP.db,res,SQLite model,3309568,fbc96becb53f35809284dd7ed82b3a9c
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_ABS_peakSNP_cov.txt.gz,res,gzip,5097634,6f5fcdfd652776cd03038e813e85c85d
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_ABS_peakSNP_model_summaries.csv,res,CSV,852237,d5ba3dea1cb8739ba7db1db7dc04125d
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_CT_peakSNP.db,res,SQLite model,1236992,5606d88f6b54c837f0b4e57e2c94db87
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_CT_peakSNP_cov.txt.gz,res,gzip,1549246,f17038d404e28eaa6ccc637bb25f8202
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_CT_peakSNP_model_summaries.csv,res,CSV,323101,72652ca02d334fb64890ae487df6a1dc
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_EE_peakSNP.db,res,SQLite model,286720,ef5d85410d57e363125531767d59e222
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_EE_peakSNP_cov.txt.gz,res,gzip,265617,6d7f1189e509fadda35de32d5ddab38a
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_EE_peakSNP_model_summaries.csv,res,CSV,92267,cf0886d83ad130da33c85a68d68ecae9
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_GOB_peakSNP.db,res,SQLite model,2469888,c4f15720a3e29c085cabbe365292e645
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_GOB_peakSNP_cov.txt.gz,res,gzip,3946414,c2c4454ad60b3e609ca136dd8d0227e5
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_GOB_peakSNP_model_summaries.csv,res,CSV,626473,b5069ace4358b3bd1b74ce8f84444c96
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_STM_peakSNP.db,res,SQLite model,1662976,e1c0e917f7a4c4fa63a7a94cd55a63f1
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_STM_peakSNP_cov.txt.gz,res,gzip,2404246,9c8c1a2a66527b677d8c287ffca7fc34
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_STM_peakSNP_model_summaries.csv,res,CSV,412071,8ddbfff590c0e584f05cf68253054303
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_TAC_peakSNP.db,res,SQLite model,2084864,8a04e714de2459235700c0f514465b62
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_TAC_peakSNP_cov.txt.gz,res,gzip,2391120,4216fcfe3e4695348898b7ab29e57a5b
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_TAC_peakSNP_model_summaries.csv,res,CSV,556900,103671818648c90a6b038fcd02a29c6f
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_TUF_peakSNP.db,res,SQLite model,311296,6cc348ff793512b03b831323bde8051e
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_TUF_peakSNP_cov.txt.gz,res,gzip,250382,b8f8caef8e87cf712899e4c27a1cdda9
+res/scTWAS_models/Normal_Colons/VUMC_HTAN_GSE266546_NL_TUF_peakSNP_model_summaries.csv,res,CSV,109566,2aa7c324018b549b25d777b8d292ee3d
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_ABS_peakSNP.db,res,SQLite model,9555968,fa281ee4c3c8f0c68de915a26c5cbd4a
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_ABS_peakSNP_cov.txt.gz,res,gzip,16554823,13886bb0dca6f35a64ea68d7815852af
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_ABS_peakSNP_model_summaries.csv,res,CSV,2241758,926094b314865dfa7cdc3631418f9ef0
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_CT_peakSNP.db,res,SQLite model,8376320,6eb9a2c0791a4f650fd6033ef14bfde5
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_CT_peakSNP_cov.txt.gz,res,gzip,14071998,a371884ce05143c8c53511c0a00261ac
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_CT_peakSNP_model_summaries.csv,res,CSV,2076361,2702453b5361c6fb1499ace6ce880ce2
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_EE_peakSNP.db,res,SQLite model,3928064,793aeaae6df093bab8e5b60f2746686e
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_EE_peakSNP_cov.txt.gz,res,gzip,2998142,55d64ef740c069e82b13ed9054044bd2
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_EE_peakSNP_model_summaries.csv,res,CSV,1492262,3dc4f1868ca86696a539af9a8d19e07d
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_GOB_peakSNP.db,res,SQLite model,9302016,4ddb8e2d9c63f81e1ad4de1b5d69c340
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_GOB_peakSNP_cov.txt.gz,res,gzip,16380009,7447687abba46fa64f2b497774b2c606
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_GOB_peakSNP_model_summaries.csv,res,CSV,2203766,518fc01d665c4a3be1878d1bcadd4cfc
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_STM_peakSNP.db,res,SQLite model,8151040,c79f8ae66fedcf35d286c05644618ddb
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_STM_peakSNP_cov.txt.gz,res,gzip,14040685,ded6076f8dcf66f7d10c1bd2c03c49e1
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_STM_peakSNP_model_summaries.csv,res,CSV,1996245,d92c4fbee30f5e07897bf9e42544b1e0
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_TAC_peakSNP.db,res,SQLite model,5918720,1bd577fa1e86575462390e81b5661624
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_TAC_peakSNP_cov.txt.gz,res,gzip,8694443,2f7f47a2c263e69ff490709a88d9ea44
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_TAC_peakSNP_model_summaries.csv,res,CSV,1683939,f9c3fd2581c8ad7855fac2e956e84820
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_TUF_peakSNP.db,res,SQLite model,3502080,5b9919abdd9fa1f6fdb9b0e1d282d57c
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_TUF_peakSNP_cov.txt.gz,res,gzip,2922704,f2686c9c8c6f008a152fa0480b19e3b1
+res/scTWAS_models/Normal_Colons/WellcomeSanger_NL_TUF_peakSNP_model_summaries.csv,res,CSV,1466909,4684a4a1654dc2f404eddd890e327d80
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_ABS_peakSNP.db,res,SQLite model,4124672,30cd64ebfd39e04804950d8422c94add
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_ABS_peakSNP_cov.txt.gz,res,gzip,6850926,2650510f757619aba1a0b85b9bea7661
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_ABS_peakSNP_model_summaries.csv,res,CSV,882163,11708b210c27f2b5ab72bff0a6099b96
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_ASC_peakSNP.db,res,SQLite model,1716224,22e2cb7c75fa98a968cf01c8252048e7
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_ASC_peakSNP_cov.txt.gz,res,gzip,1086611,bf5d1204e12b95191385f50ba0fd5b94
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_ASC_peakSNP_model_summaries.csv,res,CSV,692886,8fb6d15f7a162179c069b53d8f248eef
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_CT_peakSNP.db,res,SQLite model,901120,37c534162732c871a13a01364ea798eb
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_CT_peakSNP_cov.txt.gz,res,gzip,1250178,018bbec29c5c1dd97612755358761bc9
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_CT_peakSNP_model_summaries.csv,res,CSV,222954,923b9417a1de8dad12978d7bd620a4b0
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_EE_peakSNP.db,res,SQLite model,266240,9b11f47edf590f76381733b7e8c63bde
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_EE_peakSNP_cov.txt.gz,res,gzip,311589,60c193e878719a3ccc33d8871e15018b
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_EE_peakSNP_model_summaries.csv,res,CSV,69734,cb7819f8248615eec5ffd1a307d74355
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_GOB_peakSNP.db,res,SQLite model,2678784,417c33f0d86e4fdbd44d4d46b91417cf
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_GOB_peakSNP_cov.txt.gz,res,gzip,4068811,aaec7c242009e7b247dc34fbc853a16c
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_GOB_peakSNP_model_summaries.csv,res,CSV,639540,3ef3a2261cbe44ef2b0b8b1da769eac0
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_SSC_peakSNP.db,res,SQLite model,892928,dad1eb904434a41607f81485ceb8ead3
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_SSC_peakSNP_cov.txt.gz,res,gzip,297626,5da680a5b9d6d8f0f26cd6bf4a050d20
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_SSC_peakSNP_model_summaries.csv,res,CSV,482745,1f42f72ce4d762cdfb4be04e61bc9e19
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_STM_peakSNP.db,res,SQLite model,1925120,2f5c85df3b814fafa501e17ab9b300ce
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_STM_peakSNP_cov.txt.gz,res,gzip,3141345,affe082c5a6d6e5c107a43dcf0918c74
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_STM_peakSNP_model_summaries.csv,res,CSV,459595,1cb3a2309fdbfa27459ff1f1f4007f19
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_TAC_peakSNP.db,res,SQLite model,2531328,879c01dc5a20c3051ffecda28fdaf104
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_TAC_peakSNP_cov.txt.gz,res,gzip,3626879,b5c2b788686fcc6a1818efa8be458585
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_TAC_peakSNP_model_summaries.csv,res,CSV,623165,18f154ab963e92f486fd1545ba58bcfe
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_TUF_peakSNP.db,res,SQLite model,126976,625bebeed04e918798c350c3272ed139
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_TUF_peakSNP_cov.txt.gz,res,gzip,57303,9db23d177485e122227f9761ca0c4855
+res/scTWAS_models/Polyps/VUMC_HTAN_ADSER_TUF_peakSNP_model_summaries.csv,res,CSV,57115,51ce44ff98d80606e62bda44246fac02
 scTWAS_models/README.md,scTWAS_models,markdown,1235,de0c01df9294c19898ac7371eb14c048

@@ -14,6 +14,7 @@ Seurat, SeuratObject, Azimuth, BPCells, ArchR
 # R 4.5 was used for the single-cell work (the cohort annotation directory carried an
 # renv library for linux-rocky-9.8, R-4.5, x86_64-pc-linux-gnu). The renv library itself
 # is not deposited; only the lockfile-relevant package set is recorded here.
+<<<<<<< HEAD
 
 # Model training and association testing (sections 03-04)
 glmnet, sqldf, ACAT
@@ -27,3 +28,5 @@ DESeq2, TCGAbiolinks, enrichR, remotes
 # Figure assembly (sections 06, 11)
 scales, gridExtra, png
 
+=======
+>>>>>>> 2de678c2bfef89f7c1f9743c89a392869bce8c37

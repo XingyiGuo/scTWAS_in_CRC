@@ -18,23 +18,44 @@ script in the working directory (`DepMap_essentiality_by_geneset_sourcedata.csv`
 `SupplementaryTable_DepMap_essentiality_by_geneset.xlsx`), so the figure can be redrawn,
 but the retrieval and statistics cannot be re-run from code.
 
+<<<<<<< HEAD
 This is the only remaining gap in the analysis chain.
+=======
+## 2. The shared `QTLS` helper framework
+
+**Status: not present.** Two pseudobulk preparation scripts --
+`01_single_cell_and_xqtl/normal_colon_WellcomeSanger/Prepare_pseudobulk_expression.py` and
+`01_single_cell_and_xqtl/polyps_COLONMAP/02_prepare_pseudobulk_expression_ASC_SSC_bashconfig.py`
+-- import `annotation.py` and `phenotype.py` from a shared framework directory, resolved at
+run time from the cluster path `/data/l2_bioinfo1/liq17/LQ_frameworks/QTLS` (with a
+`/v5000/...` alternative). These modules implement the gene annotation, quantile
+normalisation and inverse-normal transform that the Methods describe, so the normalisation
+is defined in code that is not deposited. The two modules are small and should be added to
+`01_single_cell_and_xqtl/` before release.
+>>>>>>> 2de678c2bfef89f7c1f9743c89a392869bce8c37
 
 ## Also worth noting
 
 - **GWAS meta-analysis.** The European-ancestry and multi-ancestry CRC meta-analyses were
   run with external meta-analysis software; only the script that assembles the Methods
   subsection and the combined cohort table is deposited, under `manuscript_text/`.
+<<<<<<< HEAD
 - **Cluster paths.** The `.sh` and `.sbatch` wrappers, and a handful of R and Python
   scripts, carry absolute ACCRE paths (`/data/l2_bioinfo1/liq17/...`,
   `/v5000/data/l2_bioinfo1/liq17/...`). They record what was run; they will not resolve
   elsewhere without editing. This includes the three `source()` / `sys.path` lines that
   load the shared helpers now shipped in `code/lib/` - see `code/lib/README.md`.
+=======
+- **Cluster paths.** The `.sh` and `.sbatch` wrappers carry absolute ACCRE paths
+  (`/v5000/data/l2_bioinfo1/liq17/...`). They record what was run; they will not resolve
+  elsewhere without editing.
+>>>>>>> 2de678c2bfef89f7c1f9743c89a392869bce8c37
 - **One hardcoded input path.** `09_functional_screens/48_screened_and_selected.py` points
   at an upload path from a different host and will not resolve as written.
 - **A config filename typo.** `05_colocalization_smr_heidi/run_all_celltypes.sh` passes
   `coloc_peakSNP_ADSER.config.config.txt`; the file in `config/` is
   `coloc_peakSNP_ADSER.config.txt`. Left verbatim as it was run.
+<<<<<<< HEAD
 - **Stale filenames in usage text.** Several scripts print or comment a usage line naming an
   earlier version of themselves, e.g. `03_grex_model_training/WeightsSummaryToDB.R` prints
   `Usage: Rscript WeightsSummaryToDB_peakSNP.R ...`. These are help strings only, not live
@@ -54,3 +75,12 @@ This is the only remaining gap in the analysis chain.
   inverse-normal transform the Methods describe - were recovered and are now in
   `code/lib/QTLS/`, together with the two R helper files (`GenoPhenoBasic.R`,
   `FunctionalBasic.R`) that three scripts `source()` and that no earlier audit had noticed.
+=======
+
+## Closed since the first deposit
+
+The GReX model training code (`03_grex_model_training/`) and the association-testing code
+(`04_association_testing/`) were listed as missing when the deposit was first assembled.
+Both were recovered from the project repository and are now present, so the workflow has a
+continuous path from raw data through to the downstream sections.
+>>>>>>> 2de678c2bfef89f7c1f9743c89a392869bce8c37

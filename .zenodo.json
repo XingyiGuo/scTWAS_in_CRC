@@ -1,6 +1,6 @@
 {
   "title": "scTWAS in colorectal cancer: analysis code, curated peak sets and trained GReX models",
-  "description": "<p>Code and data accompanying <em>Single-cell transcriptome-wide association study in colorectal cancer</em>. The deposit covers construction of the single-cell references and cis-xQTL mapping for three donor cohorts, cell-type accessible-chromatin peak calling, elastic-net training of the cell-type models of genetically regulated expression (GReX), S-PrediXcan association testing against the CRC GWAS meta-analyses, colocalization and SMR-HEIDI, construction of the cell-type-specific TF-target networks, orthogonal support from single-cell, spatial (GeoMx and CosMx), TCGA and CPTAC data, drug-target annotation and iLINCS connectivity analysis, the arrayed siRNA and CRISPR-Cas9 viability screens, and figure and supplementary-table assembly.</p><p>This record also carries the bulk files kept out of the git repository: the 23 trained per-cell-type GReX model databases (<code>*_peakSNP.db</code>, PredictDB format) and the raw per-group accessible-chromatin peak calls. The curated peak sets used for model training are in the repository under <code>data/</code>.</p><p>Two components of the published workflow are not included and are documented in <code>docs/known_gaps.md</code>: the DepMap dependency retrieval and statistics, and a shared normalisation helper module. Individual-level genotype and single-cell expression data are not released; see the article's Data availability statement.</p>",
+  "description": "<p>Code and data accompanying <em>Single-cell transcriptome-wide association study in colorectal cancer</em>. The deposit covers construction of the single-cell references and cis-xQTL mapping for three donor cohorts, cell-type accessible-chromatin peak calling, elastic-net training of the cell-type models of genetically regulated expression (GReX), S-PrediXcan association testing against the CRC GWAS meta-analyses, colocalization and SMR-HEIDI, construction of the cell-type-specific TF-target networks, orthogonal support from single-cell, spatial (GeoMx and CosMx), TCGA and CPTAC data, drug-target annotation and iLINCS connectivity analysis, the arrayed siRNA and CRISPR-Cas9 viability screens, and figure and supplementary-table assembly.</p><p>This record also carries the data kept out of the git repository: the 23 trained per-cell-type GReX models (each a PredictDB-format <code>*_peakSNP.db</code> with its <code>*_cov.txt.gz</code> variant covariance matrix and <code>*_model_summaries.csv</code> cross-validation summary), the European-ancestry and multi-ancestry CRC GWAS meta-analysis summary statistics per chromosome, and the raw per-group accessible-chromatin peak calls. The GWAS summary statistics are also deposited in the NHGRI-EBI GWAS Catalog, which is the citable source of record. The curated peak sets used for model training are in the repository under <code>data/</code>.</p><p>Two components of the published workflow are not included and are documented in <code>docs/known_gaps.md</code>: the DepMap dependency retrieval and statistics, and a shared normalisation helper module. Individual-level genotype and single-cell expression data are not released; see the article's Data availability statement.</p>",
   "upload_type": "software",
   "license": "mit",
   "access_right": "open",
@@ -95,15 +95,16 @@
     }
   ],
   "keywords": [
-    "transcriptome-wide association study",
-    "single-cell RNA sequencing",
-    "single-cell ATAC sequencing",
-    "colorectal cancer",
-    "genetically regulated expression",
-    "colocalization",
-    "drug repurposing",
+    "GWAS summary statistics",
     "S-PrediXcan",
-    "accessible chromatin"
+    "accessible chromatin",
+    "colocalization",
+    "colorectal cancer",
+    "drug repurposing",
+    "genetically regulated expression",
+    "single-cell ATAC sequencing",
+    "single-cell RNA sequencing",
+    "transcriptome-wide association study"
   ],
   "related_identifiers": [
     {

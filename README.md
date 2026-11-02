@@ -12,8 +12,12 @@ druggability and functional-screen analyses.
 ## Layout
 
 ```
+<<<<<<< HEAD
 code/     234 analysis files in 13 sections, ordered as in Methods
           plus lib/, the shared helpers that several scripts source at run time
+=======
+code/     230 analysis files in 13 sections, ordered as in Methods
+>>>>>>> 2de678c2bfef89f7c1f9743c89a392869bce8c37
 data/     curated inputs that the code reads directly (bulk data via Zenodo)
 docs/     data flow, workflow order, figure/table map, known gaps
 env/      Python, R and external-tool environment specifications

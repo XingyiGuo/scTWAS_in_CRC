@@ -34,10 +34,14 @@ top-level `README.md`:
 
 | Item | Files | Size |
 |---|---|---|
-| `scTWAS_models/` -- trained GReX model databases (`.db`) | 23 | 75 MB |
+| `scTWAS_models/` -- the 23 trained GReX models: each `.db` plus its `*_cov.txt.gz` covariance matrix and `*_model_summaries.csv` | 69 | 208 MB |
+| `CRC_GWAS_SS/` -- CRC GWAS meta-analysis summary statistics, per chromosome, EUR and multi-ancestry | 45 | 812 MB |
 | GSE201336 per-group narrowPeak calls | 12 | 110 MB |
 | VUMC robust peak regions (BED) | 24 | 41 MB |
 | VUMC adenoma/serrated chaining-merged peaks (BED) | 7 | 14 MB |
+
+The GWAS summary statistics are also deposited in the NHGRI-EBI GWAS Catalog, which is the
+citable source of record; see `GWAS_SS/README.md`.
 
 The `.counts.tsv` and summary tables for those peak sets *are* kept here, under
 `scATAC-seq/peak_calling_summaries/`, so the reported counts can be checked without the

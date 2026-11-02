@@ -1,0 +1,121 @@
+{
+  "title": "scTWAS in colorectal cancer: analysis code, curated peak sets and trained GReX models",
+  "description": "<p>Code and data accompanying <em>Single-cell transcriptome-wide association study in colorectal cancer</em>. The deposit covers construction of the single-cell references and cis-xQTL mapping for three donor cohorts, cell-type accessible-chromatin peak calling, elastic-net training of the cell-type models of genetically regulated expression (GReX), S-PrediXcan association testing against the CRC GWAS meta-analyses, colocalization and SMR-HEIDI, construction of the cell-type-specific TF-target networks, orthogonal support from single-cell, spatial (GeoMx and CosMx), TCGA and CPTAC data, drug-target annotation and iLINCS connectivity analysis, the arrayed siRNA and CRISPR-Cas9 viability screens, and figure and supplementary-table assembly.</p><p>This record also carries the bulk files kept out of the git repository: the 23 trained per-cell-type GReX model databases (<code>*_peakSNP.db</code>, PredictDB format) and the raw per-group accessible-chromatin peak calls. The curated peak sets used for model training are in the repository under <code>data/</code>.</p><p>Two components of the published workflow are not included and are documented in <code>docs/known_gaps.md</code>: the DepMap dependency retrieval and statistics, and a shared normalisation helper module. Individual-level genotype and single-cell expression data are not released; see the article's Data availability statement.</p>",
+  "upload_type": "software",
+  "license": "mit",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Li, Qing",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Li, Chao",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Lyu, Linshuoshuo",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Wang, Jifeng",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Yuan, Fangcheng",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Song, Qingyuan",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Yan, Chao",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Choi, Jungyoon",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Xu, Shuai",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Wang, Yu",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Sheng, Quanhu",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Shu, Xiao-Ou",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Singh, Bhuminder",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Coburn, Lori A.",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Wilson, Keith T.",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Ciombor, Kristen K.",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Eng, Cathy",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Peters, Ulrike",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Yin, Zhijun",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Zheng, Wei",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Lau, Ken S.",
+      "affiliation": "Vanderbilt University Medical Center"
+    },
+    {
+      "name": "Guo, Xingyi",
+      "affiliation": "Vanderbilt University Medical Center"
+    }
+  ],
+  "keywords": [
+    "transcriptome-wide association study",
+    "single-cell RNA sequencing",
+    "single-cell ATAC sequencing",
+    "colorectal cancer",
+    "genetically regulated expression",
+    "colocalization",
+    "drug repurposing",
+    "S-PrediXcan",
+    "accessible chromatin"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/XingyiGuo/scTWAS_in_CRC",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.17671259",
+      "relation": "references",
+      "scheme": "doi"
+    }
+  ],
+  "notes": "Replace the TODO fields in CITATION.cff and add the article DOI as a related identifier once the article is accepted."
+}

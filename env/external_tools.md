@@ -23,3 +23,13 @@ Versions: SMR v1.4.2 is named in the Methods. The remaining tools were used at t
 versions available in the cluster module environment over the analysis period and were not
 pinned; where a version could plausibly change a reported number it is named in the
 Methods.
+
+## R dependency locks
+
+- `renv.lock` -- the project-level lockfile from the ACCRE analysis environment. This is the
+  authoritative R package set; restore with `renv::restore()`. It was generated on
+  linux-rocky-9.8 / R-4.5 / x86_64-pc-linux-gnu, so the recorded package *records* are what
+  transfers; binaries are resolved per platform on restore.
+- `renv_GSE201336_scATAC.lock` -- the narrower lockfile that shipped with the GSE201336
+  scATAC-seq peak-calling pipeline.
+- `r_packages.txt` -- a human-readable summary of the same package set, grouped by purpose.

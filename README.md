@@ -13,8 +13,9 @@ druggability and functional-screen analyses.
 
 ```
 <<<<<<< HEAD
-code/     234 analysis files in 13 sections, ordered as in Methods
-          plus lib/, the shared helpers that several scripts source at run time
+code/     234 analysis files. 12 Methods-ordered sections (01_single_cell_and_xqtl
+          through 12_supplementary_tables) plus manuscript_text; Viz/ for the figure
+          scripts; and lib/ for the shared helpers several scripts load at run time
 =======
 code/     230 analysis files in 13 sections, ordered as in Methods
 >>>>>>> 2de678c2bfef89f7c1f9743c89a392869bce8c37
@@ -64,9 +65,11 @@ repositories named in the manuscript's Data availability statement.
 1. Install the environments in [`env/`](env) (`python_requirements.txt`, `r_packages.txt`,
    and the external tools in `external_tools.md` -- PLINK, tensorQTL, S-PrediXcan, SMR,
    MACS3, ArchR).
-2. Obtain the controlled source data from the accessions in the Data availability
+2. R dependencies are pinned in `env/renv.lock` (`renv::restore()`). Note it was built on
+   Linux (R 4.5); on another platform renv resolves platform-appropriate builds.
+3. Obtain the controlled source data from the accessions in the Data availability
    statement, and download the Zenodo archive for the trained models.
-3. Run sections in numeric order. [`docs/workflow.md`](docs/workflow.md) gives the
+4. Run sections in numeric order. [`docs/workflow.md`](docs/workflow.md) gives the
    execution order and [`docs/data_flow.md`](docs/data_flow.md) the file-level links
    between sections.
 

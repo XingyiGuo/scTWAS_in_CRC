@@ -1,0 +1,21 @@
+# Python dependencies, derived from the import statements of the deposited code.
+# No versions are pinned: the analyses were run over roughly four months against the
+# then-current releases in the cluster environment, and no lockfile was kept.
+# Versions that could plausibly change a reported number are named in the Methods.
+
+matplotlib
+pandas
+numpy
+scipy
+statsmodels
+openpyxl
+networkx
+requests
+h5py
+pydeseq2
+cptac
+python-docx
+pillow
+reportlab
+svglib
+resvg-py

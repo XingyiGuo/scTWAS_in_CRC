@@ -1,0 +1,120 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the article and the archived release."
+title: "scTWAS in colorectal cancer: analysis code, curated peak sets and trained GReX models"
+abstract: >-
+  Code for cell-type-specific models of genetically regulated expression in normal
+  colorectal mucosa and colorectal polyps, their integration with colorectal cancer GWAS
+  meta-analyses, and the regulatory, spatial, proteomic, druggability and functional-screen
+  analyses reported in the accompanying article.
+type: software
+license: MIT
+date-released: "2026-11-02"
+version: "1.1.0"
+repository-code: "https://github.com/XingyiGuo/scTWAS_in_CRC"
+keywords:
+  - transcriptome-wide association study
+  - single-cell RNA sequencing
+  - colorectal cancer
+  - genetically regulated expression
+  - single-cell ATAC sequencing
+contact:
+  - email: "xingyi.guo@vumc.org"
+    family-names: Guo
+    given-names: Xingyi
+authors:
+  - family-names: Li
+    given-names: Qing
+  - family-names: Li
+    given-names: Chao
+  - family-names: Lyu
+    given-names: Linshuoshuo
+  - family-names: Wang
+    given-names: Jifeng
+  - family-names: Yuan
+    given-names: Fangcheng
+  - family-names: Song
+    given-names: Qingyuan
+  - family-names: Yan
+    given-names: Chao
+  - family-names: Choi
+    given-names: Jungyoon
+  - family-names: Xu
+    given-names: Shuai
+  - family-names: Wang
+    given-names: Yu
+  - family-names: Sheng
+    given-names: Quanhu
+  - family-names: Shu
+    given-names: Xiao-Ou
+  - family-names: Singh
+    given-names: Bhuminder
+  - family-names: Coburn
+    given-names: Lori A.
+  - family-names: Wilson
+    given-names: Keith T.
+  - family-names: Ciombor
+    given-names: Kristen K.
+  - family-names: Eng
+    given-names: Cathy
+  - family-names: Peters
+    given-names: Ulrike
+  - family-names: Yin
+    given-names: Zhijun
+  - family-names: Zheng
+    given-names: Wei
+  - family-names: Lau
+    given-names: Ken S.
+  - family-names: Guo
+    given-names: Xingyi
+    # TODO add ORCID identifiers before release
+preferred-citation:
+  type: article
+  title: "Single-cell transcriptome-wide association study in colorectal cancer"
+  authors:
+    - family-names: Li
+      given-names: Qing
+    - family-names: Li
+      given-names: Chao
+    - family-names: Lyu
+      given-names: Linshuoshuo
+    - family-names: Wang
+      given-names: Jifeng
+    - family-names: Yuan
+      given-names: Fangcheng
+    - family-names: Song
+      given-names: Qingyuan
+    - family-names: Yan
+      given-names: Chao
+    - family-names: Choi
+      given-names: Jungyoon
+    - family-names: Xu
+      given-names: Shuai
+    - family-names: Wang
+      given-names: Yu
+    - family-names: Sheng
+      given-names: Quanhu
+    - family-names: Shu
+      given-names: Xiao-Ou
+    - family-names: Singh
+      given-names: Bhuminder
+    - family-names: Coburn
+      given-names: Lori A.
+    - family-names: Wilson
+      given-names: Keith T.
+    - family-names: Ciombor
+      given-names: Kristen K.
+    - family-names: Eng
+      given-names: Cathy
+    - family-names: Peters
+      given-names: Ulrike
+    - family-names: Yin
+      given-names: Zhijun
+    - family-names: Zheng
+      given-names: Wei
+    - family-names: Lau
+      given-names: Ken S.
+    - family-names: Guo
+      given-names: Xingyi
+  journal: "TODO journal"
+  year: 2026
+  doi: "TODO article DOI"

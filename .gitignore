@@ -1,5 +1,20 @@
-*.csv
-*.xlsx
-*.pdf
-*.png
+# editor / OS
+.Rhistory
+.RData
+.Rproj.user/
+__pycache__/
+*.pyc
+.DS_Store
+desktop.ini
+Thumbs.db
+
+# local scratch -- never committed
 inhouse/
+tmp/
+scratch/
+
+# large derived outputs are released through Zenodo, not git
+*.rds
+*.h5ad
+*.bam
+*.bam.bai

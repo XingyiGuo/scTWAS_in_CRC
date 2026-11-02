@@ -1,0 +1,56 @@
+# Known gaps - what cannot be re-run from this repository alone
+
+Recorded here rather than silently omitted.
+
+## 1. DepMap dependency analysis (Figure 7a,b; Supplementary Table 23)
+
+**Status: partially present.** `11_figures/figure7_depmap_screens/build_figure7.py` is a
+pure rendering function: it receives the gene-effect distributions, the pairwise test table
+and the per-gene values as arguments and draws the panels. The code that retrieved Chronos
+gene-effect scores from the Open Targets GraphQL API (release 26.09,
+`depMapEssentiality`), restricted them to the 63 colorectal adenocarcinoma lines in the
+DepMap intestine category, assembled the four comparison gene sets and ran the
+Kruskal-Wallis and Holm-corrected Mann-Whitney tests was not found.
+
+The retrieved data and the test results survive as exported tables next to the figure
+script in the working directory (`DepMap_essentiality_by_geneset_sourcedata.csv`,
+`depmap_intestine_*_percellline.csv`,
+`SupplementaryTable_DepMap_essentiality_by_geneset.xlsx`), so the figure can be redrawn,
+but the retrieval and statistics cannot be re-run from code.
+
+This is the only remaining gap in the analysis chain.
+
+## Also worth noting
+
+- **GWAS meta-analysis.** The European-ancestry and multi-ancestry CRC meta-analyses were
+  run with external meta-analysis software; only the script that assembles the Methods
+  subsection and the combined cohort table is deposited, under `manuscript_text/`.
+- **Cluster paths.** The `.sh` and `.sbatch` wrappers, and a handful of R and Python
+  scripts, carry absolute ACCRE paths (`/data/l2_bioinfo1/liq17/...`,
+  `/v5000/data/l2_bioinfo1/liq17/...`). They record what was run; they will not resolve
+  elsewhere without editing. This includes the three `source()` / `sys.path` lines that
+  load the shared helpers now shipped in `code/lib/` - see `code/lib/README.md`.
+- **One hardcoded input path.** `09_functional_screens/48_screened_and_selected.py` points
+  at an upload path from a different host and will not resolve as written.
+- **A config filename typo.** `05_colocalization_smr_heidi/run_all_celltypes.sh` passes
+  `coloc_peakSNP_ADSER.config.config.txt`; the file in `config/` is
+  `coloc_peakSNP_ADSER.config.txt`. Left verbatim as it was run.
+- **Stale filenames in usage text.** Several scripts print or comment a usage line naming an
+  earlier version of themselves, e.g. `03_grex_model_training/WeightsSummaryToDB.R` prints
+  `Usage: Rscript WeightsSummaryToDB_peakSNP.R ...`. These are help strings only, not live
+  references; no deposited script `source()`s a file that is absent.
+- **Shell syntax unverified.** The Python and R files were all machine-checked for
+  parseability (106 Python, 76 R, 0 failures). The 44 shell and Slurm scripts were not:
+  no shell was available to run `bash -n` against them.
+
+## Closed since the first deposit
+
+- **GReX model training** (`03_grex_model_training/`) and **association testing**
+  (`04_association_testing/`) were listed as missing. The elastic-net trainer, the
+  PredictDB builder, the S-PrediXcan runner and the ACAT Cauchy combination were recovered
+  from the project repository and are now present.
+- **The shared `QTLS` helper framework** was listed as missing. `annotation.py` and
+  `phenotype.py` - which define the gene annotation, quantile normalisation and
+  inverse-normal transform the Methods describe - were recovered and are now in
+  `code/lib/QTLS/`, together with the two R helper files (`GenoPhenoBasic.R`,
+  `FunctionalBasic.R`) that three scripts `source()` and that no earlier audit had noticed.

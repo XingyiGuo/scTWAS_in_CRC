@@ -1,0 +1,29 @@
+# R packages, derived from the library()/require() calls of the deposited code.
+# CRAN
+data.table, dplyr, tidyr, tibble, stringr, readr, ggplot2, ggrepel, patchwork, pheatmap,
+shadowtext, systemfonts, Matrix, optparse, R.utils, future, RhpcBLASctl, readxl, openxlsx,
+arrow, DBI, RSQLite, coloc, harmony
+
+# Bioconductor
+edgeR, limma, DEqMS, preprocessCore, SummarizedExperiment, GenomicRanges, rtracklayer,
+ensembldb, EnsDb.Hsapiens.v86, BSgenome.Hsapiens.UCSC.hg38
+
+# Single-cell / chromatin
+Seurat, SeuratObject, Azimuth, BPCells, ArchR
+
+# R 4.5 was used for the single-cell work (the cohort annotation directory carried an
+# renv library for linux-rocky-9.8, R-4.5, x86_64-pc-linux-gnu). The renv library itself
+# is not deposited; only the lockfile-relevant package set is recorded here.
+
+# Model training and association testing (sections 03-04)
+glmnet, sqldf, ACAT
+
+# TF motif logos (section 06)
+JASPAR2024, TFBSTools, ggseqlogo
+
+# Differential expression, enrichment and public-cohort re-analysis (sections 07, 09, 10)
+DESeq2, TCGAbiolinks, enrichR, remotes
+
+# Figure assembly (sections 06, 11)
+scales, gridExtra, png
+

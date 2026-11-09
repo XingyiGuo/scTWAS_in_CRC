@@ -56,10 +56,13 @@ is defined in code that is not deposited. The two modules are small and should b
   `coloc_peakSNP_ADSER.config.config.txt`; the file in `config/` is
   `coloc_peakSNP_ADSER.config.txt`. Left verbatim as it was run.
 <<<<<<< HEAD
-- **Stale filenames in usage text.** Several scripts print or comment a usage line naming an
-  earlier version of themselves, e.g. `03_grex_model_training/WeightsSummaryToDB.R` prints
-  `Usage: Rscript WeightsSummaryToDB_peakSNP.R ...`. These are help strings only, not live
-  references; no deposited script `source()`s a file that is absent.
+- **Stale filenames in usage text (25 places).** Many scripts print or comment a usage
+  line naming an earlier version of themselves, e.g. `03_grex_model_training/WeightsSummaryToDB.R`
+  prints `Usage: Rscript WeightsSummaryToDB_peakSNP.R ...`, and several scripts in
+  `01_single_cell_and_xqtl/` carry header names from before the deposit was renumbered
+  (`03_cluster_annot.R` says `03_cluster_plots.R`, `01_match_HTAN_ASC_SSC_...py` says
+  `08_match_...py`). These are help strings and comments only: as of this audit no script
+  executes a file that is absent. Left verbatim so the code matches what was run.
 - **Shell syntax unverified.** The Python and R files were all machine-checked for
   parseability (106 Python, 76 R, 0 failures). The 44 shell and Slurm scripts were not:
   no shell was available to run `bash -n` against them.

@@ -11,6 +11,16 @@
 
 #conda activate tftwas_coloc
 
-#Rscript GWAS_leadvar_coloc_protein.R $1
+# usage: sbatch GWAS_leadvar_coloc_protein.sh <Polyps|VUMC|WellcomeSanger> <cisprotein|transprotein>
+#
+# The cohort is an argument rather than part of this file, because there is one
+# wrapper and three cohort scripts. It used to name a combined
+# *_Polyps_WellcomeSanger.R that does not exist, so the job failed immediately.
 
-Rscript GWAS_leadvar_coloc_protein_Polyps_WellcomeSanger.R $1
+COHORT="${1:?give a cohort: Polyps, VUMC or WellcomeSanger}"
+ANALYSIS="${2:?give an analysis: cisprotein or transprotein}"
+
+SCRIPT="GWAS_leadvar_coloc_protein_${COHORT}.R"
+[ -f "$SCRIPT" ] || { echo "no such cohort script: $SCRIPT" >&2; exit 1; }
+
+Rscript "$SCRIPT" "$ANALYSIS"

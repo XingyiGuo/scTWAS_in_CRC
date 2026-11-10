@@ -1,7 +1,5 @@
 # Single-cell transcriptome-wide association analysis reveals epithelial cell-specific genetic susceptibility to colorectal cancer
 
-Analysis code and resources for the study by Qing Li, Chao Li, and colleagues.
-
 The study uses single-cell transcriptome-wide association analysis (scTWAS) to investigate
 how inherited colorectal cancer (CRC) risk relates to gene regulation in normal and
 premalignant epithelium. It combines matched germline genotypes and single-cell transcriptomes

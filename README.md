@@ -6,7 +6,7 @@ The study uses single-cell transcriptome-wide association analysis (scTWAS) to i
 how inherited colorectal cancer (CRC) risk relates to gene regulation in normal and
 premalignant epithelium. It combines matched germline genotypes and single-cell transcriptomes
 from normal colorectal mucosa (381 donors) and polyps (84 donors), using cell-type-specific
-chromatin accessibility to select variants for genetically regulated expression models.
+chromatin accessibility to select variants for genetically regulated expression (GReX) models.
 Integration with European-ancestry and multi-ancestry CRC genome-wide association study
 (GWAS) results identified 546 gene–cell-type associations implicating 347 candidate
 susceptibility genes across seven normal and nine polyp epithelial populations.

@@ -9,11 +9,5 @@
 #SBATCH --time=7-0:0:0
 #SBATCH --account=l2_bioinfo1
 
-# Submitter for the chr1-22 VCF merge. The job name and the 160G request above
-# belong to that merge, not to the sub-clustering lines kept below for reference.
-#
-# module load StdEnv/2023
-# module load r/4.5.0
-# Rscript 04_sub_cluster.R
-
+# Submit from this directory to merge the chromosome 1–22 VCFs.
 bash g1_HTAN_GSE266546_merge_chr1_22.sh

@@ -1,6 +1,6 @@
 # =============================================================================
 # TWAS configuration: WellcomeSanger NL peakSNP models
-# Used by TWAS_modelbuilding_scTWAS.R and WeightsSummaryToDB_peakSNP*.R
+# Used by TWAS_modelbuilding_scTWAS.R and WeightsSummaryToDB.R.
 # =============================================================================
 
 TWAS_CONFIG <- list(
@@ -58,9 +58,6 @@ TWAS_CONFIG <- list(
 
     gene_annotation =
       "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf",
-
-    helper_functions =
-      "/data/l2_bioinfo1/liq17/LQ_frameworks/GenoPhenoBasic.R",
 
     output_dir_template = paste0(
       "{work_dir}/TWAS_HTAN_GSE266546_WellcomeSanger_res/",

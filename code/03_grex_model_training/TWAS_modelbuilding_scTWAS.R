@@ -1,6 +1,4 @@
-library("methods")
 library("glmnet")
-library("stringr")
 library("data.table")
 library("dplyr")
 
@@ -139,6 +137,9 @@ covariate_file <- fill_template(covariate_template,values)
 
 gene_annot_file <- TWAS_CONFIG$paths$gene_annotation
 helper_functions_file <- TWAS_CONFIG$paths$helper_functions
+if (is.null(helper_functions_file)) {
+  helper_functions_file <- file.path(get_script_dir(), "..", "lib", "GenoPhenoBasic.R")
+}
 output_dir <- fill_template(TWAS_CONFIG$paths$output_dir_template, values)
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -209,7 +210,6 @@ read_peer_expression <- function(expression_file, gene_annot) {
     stop("Expression file must contain one gene column plus >=1 sample column.")
   }
 
-  gene_col <- names(x)[1]
   gene_input <- trimws(as.character(x[[1]]))
   sample_ids <- names(x)[-1]
 
@@ -718,7 +718,7 @@ read_peak_rsid_filter <- function(path) {
 # =============================================================================
 # II. Model functions
 # =============================================================================
-do_elastic_net <- function(cis_gt, expr_adj, n_folds, cv_fold_ids, n_times, alpha) {
+do_elastic_net <- function(cis_gt, expr_adj, cv_fold_ids, n_times, alpha) {
   # glmnet expects:
   #   x = numeric matrix, rows = samples
   #   y = plain numeric vector, length = nrow(x)
@@ -774,8 +774,6 @@ do_elastic_net <- function(cis_gt, expr_adj, n_folds, cv_fold_ids, n_times, alph
   )
 
   lambda_seq <- fit$lambda
-  fits <- list()
-  fits[[1]] <- fit
   cvms <- matrix(NA_real_, nrow = length(lambda_seq), ncol = n_times)
   cvms[seq_along(fit$cvm), 1] <- fit$cvm
 
@@ -805,7 +803,6 @@ do_elastic_net <- function(cis_gt, expr_adj, n_folds, cv_fold_ids, n_times, alph
         family = "gaussian"
       )
 
-      fits[[i]] <- fit_i
       cvms[seq_along(fit_i$cvm), i] <- fit_i$cvm
     }
   }
@@ -819,7 +816,7 @@ do_elastic_net <- function(cis_gt, expr_adj, n_folds, cv_fold_ids, n_times, alph
   best_lambda <- lambda_seq[best_lam_ind]
 
   list(
-    cv_fit = fits[[1]],
+    cv_fit = fit,
     min_avg_cvm = min(avg_cvm, na.rm = TRUE),
     best_lam_ind = best_lam_ind,
     best_lambda = best_lambda
@@ -1095,7 +1092,6 @@ for (i in 1:n_genes) {
       elnet_out <- do_elastic_net(
         cis_gt,
         adj_expression,
-        effective_n_folds,
         cv_fold_ids,
         n_times,
         alpha

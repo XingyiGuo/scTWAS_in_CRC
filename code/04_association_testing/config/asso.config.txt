@@ -2,7 +2,7 @@
 # SPrediXcan association configuration
 # HTAN_GSE266546 peakSNP prediction models x CRC GWAS
 #
-# This file is sourced by asso.sh (bash syntax).
+# This file is sourced by asso_selectCT_addR2global.sh (Bash syntax).
 # ==============================================================================
 
 # Software
@@ -11,16 +11,13 @@ PYTHON_BIN="python"
 
 # Prediction-model root
 MODEL_ROOT="/data/l2_bioinfo1/liq17/scTWAS/TWAS_HTAN_GSE266546_WellcomeSanger_res"
-##NL
-#MODEL_DATASET_PREFIX="VUMC_HTAN_GSE266546"
-#MODEL_DATASET_PREFIX="WellcomeSanger"
-
-##ADSER
-MODEL_DATASET_PREFIX="VUMC_HTAN"
+case "${REQUESTED_TISSUE}" in
+    NL) MODEL_DATASET_PREFIX="${MODEL_DATASET_PREFIX:-VUMC_HTAN_GSE266546}" ;;
+    ADSER) MODEL_DATASET_PREFIX="${MODEL_DATASET_PREFIX:-VUMC_HTAN}" ;;
+esac
 MODEL_SUFFIX="peakSNP"
 
 # Models
-TISSUES=("NL" "ADSER")
 NL_CELL_TYPES=("ABS" "CT" "EE" "GOB" "STM" "TAC" "TUF")
 ADSER_CELL_TYPES=("ABS" "CT" "EE" "GOB" "STM" "TAC" "TUF" "ASC" "SSC")
 
@@ -48,7 +45,7 @@ BETA_COLUMN="BETA"
 PVALUE_COLUMN="P"
 
 # Output
-ASSO_OUTPUT_DIR="${MODEL_ROOT}/SPrediXcan_peakSNP_association"
+ASSO_OUTPUT_DIR="${ASSO_OUTPUT_DIR:-${MODEL_ROOT}/SPrediXcan_peakSNP_association}"
 VERBOSITY=1
 
 # true: skip existing non-empty result CSVs

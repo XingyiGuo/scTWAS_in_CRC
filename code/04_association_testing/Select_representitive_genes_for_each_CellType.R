@@ -5,31 +5,23 @@ library(readr)
 # Input files
 # ============================================================
 
-NL_FILE <- paste0(
-  "/data/l2_bioinfo1/liq17/scTWAS/",
-  "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
-  "SPrediXcan_peakSNP_association/",
-  "Cauchy_Meta_NL_WellcomeSanger_NL_EUR_Multi/",
-  "HTAN_NL_WellcomeSanger_NL_7celltypes_peakSNP.EUR_Multi.CauchyMeta.sig.csv"
+OUT_DIR <- Sys.getenv(
+  "ASSO_OUTPUT_DIR",
+  "/data/l2_bioinfo1/liq17/scTWAS/TWAS_HTAN_GSE266546_WellcomeSanger_res/SPrediXcan_peakSNP_association"
 )
-
-ADSER_FILE <- paste0(
-  "/data/l2_bioinfo1/liq17/scTWAS/",
-  "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
-  "SPrediXcan_peakSNP_association/",
-  "VUMC_HTAN_ADSER_EUR_Multi_sig/",
-  "VUMC_HTAN_ADSER_9CTs_peakSNP.EUR_Multi.sig.csv"
+NL_FILE <- Sys.getenv(
+  "NL_FILE",
+  file.path(
+    OUT_DIR, "Cauchy_Meta_NL_WellcomeSanger_NL_EUR_Multi",
+    "HTAN_NL_WellcomeSanger_NL_7celltypes_peakSNP.EUR_Multi.CauchyMeta.sig.csv"
+  )
 )
-
-
-# ============================================================
-# Output directory
-# ============================================================
-
-OUT_DIR <- paste0(
-  "/data/l2_bioinfo1/liq17/scTWAS/",
-  "TWAS_HTAN_GSE266546_WellcomeSanger_res/",
-  "SPrediXcan_peakSNP_association/"
+ADSER_FILE <- Sys.getenv(
+  "ADSER_FILE",
+  file.path(
+    OUT_DIR, "VUMC_HTAN_ADSER_EUR_Multi_sig",
+    "VUMC_HTAN_ADSER_9CTs_peakSNP.EUR_Multi.sig.csv"
+  )
 )
 
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)

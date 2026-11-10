@@ -11,16 +11,6 @@
 #
 # Resources: ~1-2 h on 16 cores for ~80 samples; peak RSS ~6 GB/thread. Arrows total ~40 GB.
 
-# options(repos = c(CRAN = "https://cloud.r-project.org"))
-# install.packages("remotes")
-# install.packages("BiocManager")	
-# remotes::install_github(
-    # "GreenleafLab/ArchR",
-    # ref = "master",
-    # repos = BiocManager::repositories(),
-    # upgrade = "never"
-# )
-
 suppressPackageStartupMessages({
   library(ArchR)
   library(optparse)
@@ -132,7 +122,7 @@ ArrowFiles <- createArrowFiles(
 )
 
 # Doublet scores. The authors additionally supply an explicit post-filter cell list;
-# 02_annotate_and_call_peaks.R subsets to exactly those cells, so this is informational.
+# 02_relabel.R subsets to annotated cells, so the doublet scores are informational.
 doubScores <- addDoubletScores(input = ArrowFiles, k = 10, knnMethod = "UMAP", LSIMethod = 1)
 
 proj <- ArchRProject(ArrowFiles = ArrowFiles, outputDirectory = "proj_all_cells", copyArrows = FALSE)

@@ -11,9 +11,8 @@ suppressMessages({
 # Colocalization: significant peakSNP-TWAS genes x CRC GWAS x source-matched eQTL
 #
 # Usage:
-#   Rscript coloc_gwas_xqtl_sigSource_peakSNP.R ABS coloc_peakSNP_NL.config.txt
-#   Rscript coloc_gwas_xqtl_sigSource_peakSNP.R all coloc_peakSNP_NL.config.txt
-#   Rscript coloc_gwas_xqtl_sigSource_peakSNP.R SSC coloc_peakSNP_ADSER.config.txt
+#   Rscript 01_coloc_gwas_xqtl_sigSource_peakSNP.R ABS config/coloc_peakSNP_NL.config.txt
+#   Rscript 01_coloc_gwas_xqtl_sigSource_peakSNP.R all config/coloc_peakSNP_ADSER.config.txt
 #
 # NL:
 #   - read EUR/Multi significant genes from the CT-specific Cauchy-meta table
@@ -22,7 +21,7 @@ suppressMessages({
 #
 # ADSER:
 #   - read EUR/Multi significant genes from the CT-specific ADSER table
-#   - eQTL source is fixed to VUMC_HTAN_GSE266546
+#   - eQTL source is fixed to VUMC_HTAN
 #
 # TensorQTL variant convention expected:
 #   rsID;chrom_pos_REF_ALT
@@ -33,8 +32,8 @@ args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) < 2L) {
   stop(
-    "Usage: Rscript coloc_gwas_xqtl_sigSource_peakSNP.R ",
-    "<CT|all> <config.R>"
+    "Usage: Rscript 01_coloc_gwas_xqtl_sigSource_peakSNP.R ",
+    "<CT|all> <config>"
   )
 }
 

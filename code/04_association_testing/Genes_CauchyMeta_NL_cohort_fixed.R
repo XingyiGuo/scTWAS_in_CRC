@@ -1,15 +1,8 @@
-# conda activate tftwas
-
 library(ACAT)
 library(data.table)
 library(dplyr)
 
 args <- commandArgs(trailingOnly = TRUE)
-
-# Safely combine available p-values.
-# dplyr::case_when() evaluates RHS expressions eagerly, so calling ACAT()
-# inside case_when() can still pass NA values to ACAT. This helper removes
-# missing p-values before ACAT is called.
 
 # Cohort can be supplied as the second command-line argument.
 # Examples:
@@ -55,8 +48,8 @@ arg1 <- toupper(args[1])
 if (arg1 == "ALL") {
   CTs_to_run <- CTlist
 } else if (grepl("^[0-9]+$", args[1])) {
-  idx <- as.integer(args[1])
-  if (idx < 1 || idx > length(CTlist)) {
+  idx <- suppressWarnings(as.integer(args[1]))
+  if (is.na(idx) || idx < 1 || idx > length(CTlist)) {
     stop("Cell type index must be between 1 and ", length(CTlist))
   }
   CTs_to_run <- CTlist[idx]
@@ -71,7 +64,10 @@ if (arg1 == "ALL") {
 # -----------------------------------------------------------------------------
 # Input/output paths
 # -----------------------------------------------------------------------------
-BASE_DIR <- "/data/l2_bioinfo1/liq17/scTWAS/TWAS_HTAN_GSE266546_WellcomeSanger_res/SPrediXcan_peakSNP_association"
+BASE_DIR <- Sys.getenv(
+  "ASSO_OUTPUT_DIR",
+  "/data/l2_bioinfo1/liq17/scTWAS/TWAS_HTAN_GSE266546_WellcomeSanger_res/SPrediXcan_peakSNP_association"
+)
 OUT_DIR <- file.path(BASE_DIR, paste0("Cauchy_Meta_NL_WellcomeSanger_NL_", cohort))
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 

@@ -3,10 +3,10 @@ set -euo pipefail
 
 # ==============================================================================
 # Run SMR + HEIDI from the manifest produced by:
-#   prepare_SMR_HEIDI_inputs_targetTopEQTL_500kb.R
+#   02_SMR_HEIDI_inputs_targetTopEQTL_500kb_directTWAS.R
 #
 # Usage:
-#   bash run_SMR_HEIDI.sh \
+#   bash 02b_run_SMR_HEIDI.sh \
 #     /data/l2_bioinfo1/liq17/scTWAS/TWAS_HTAN_GSE266546_WellcomeSanger_res/SMR_HEIDI_GWAS_eQTL_sigSource/NL_targetTopEQTL_500kb/SMR_HEIDI.NL.ABS.manifest.tsv
 #
 # Optional executable overrides:
@@ -44,18 +44,17 @@ if ! command -v "$PLINK2_BIN" >/dev/null 2>&1 && [[ ! -x "$PLINK2_BIN" ]]; then
     exit 1
 fi
 
-OUTROOT=$(dirname "$MANIFEST")
 RUN_STATUS="${MANIFEST%.manifest.tsv}.run_status.tsv"
 COMBINED="${MANIFEST%.manifest.tsv}.SMR_HEIDI.results.tsv"
-
-printf 'analysis_group\tcell_type\tgene\tcohort\teqtl_source\ttarget_SNP\trun_status\tn_ld_snps\tsmr_file\tlog_file\tmessage\n' > "$RUN_STATUS"
 
 # Pull only runner-required columns by header name, so the script is robust to
 # future additions/reordering of columns in the manifest.
 TASK_STREAM=$(mktemp)
 trap 'rm -f "$TASK_STREAM"' EXIT
 
-awk -F'\t' 'BEGIN{OFS="\t"}
+# Use a non-whitespace separator internally to preserve empty TSV fields in read.
+awk -F'\t' 'BEGIN{OFS="\034"}
+{ sub(/\r$/, "") }
 NR==1 {
   for(i=1;i<=NF;i++) h[$i]=i;
   required[1]="analysis_group"; required[2]="cell_type"; required[3]="gene";
@@ -84,11 +83,13 @@ NR==1 {
         $(h["thread_num"]), $(h["status"])
 }' "$MANIFEST" > "$TASK_STREAM"
 
+printf 'analysis_group\tcell_type\tgene\tcohort\teqtl_source\ttarget_SNP\trun_status\tn_ld_snps\tsmr_file\tlog_file\tmessage\n' > "$RUN_STATUS"
+
 n_total=$(wc -l < "$TASK_STREAM" | awk '{print $1}')
 echo "SMR+HEIDI tasks in manifest: $n_total"
 echo "Run status: $RUN_STATUS"
 
-while IFS=$'\t' read -r \
+while IFS=$'\034' read -r \
     analysis_group cell_type gene cohort eqtl_source target_snp \
     gwas_ma eqtl_flist beqtl_prefix snplist pfile_prefix task_out_prefix \
     peqtl_smr peqtl_heidi heidi_mtd heidi_min_m heidi_max_m \
@@ -101,20 +102,19 @@ do
     echo "Target SNP: ${target_snp}"
     echo "======================================================================"
 
-    log_file="${task_out_prefix}.run.log"
-    smr_file="${task_out_prefix}.smr"
-    task_dir=$(dirname "$task_out_prefix")
-    mkdir -p "$task_dir"
-
     # Skip tasks that were not fully prepared.
     if [[ "$prep_status" != "prepared" ]]; then
         msg="prep_status=${prep_status}"
         printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
           "$analysis_group" "$cell_type" "$gene" "$cohort" "$eqtl_source" \
-          "$target_snp" "SKIPPED_PREP" "NA" "$smr_file" "$log_file" "$msg" >> "$RUN_STATUS"
+          "$target_snp" "SKIPPED_PREP" "NA" "NA" "NA" "$msg" >> "$RUN_STATUS"
         echo "SKIP: $msg"
         continue
     fi
+
+    log_file="${task_out_prefix}.run.log"
+    smr_file="${task_out_prefix}.smr"
+    mkdir -p "$(dirname "$task_out_prefix")"
 
     # Basic input checks.
     missing=0

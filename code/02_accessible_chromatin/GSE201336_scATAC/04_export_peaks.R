@@ -26,11 +26,13 @@ opt <- parse_args(OptionParser(option_list = list(
   make_option("--bigwigs", action = "store_true", default = FALSE)
 )))
 
-setwd(normalizePath(opt$archr))
+dir.create(opt$out, recursive = TRUE, showWarnings = FALSE)
+outdir <- normalizePath(opt$out, mustWork = TRUE)
+
+setwd(normalizePath(opt$archr, mustWork = TRUE))
 addArchRThreads(opt$threads)
 addArchRGenome("hg38")
 
-outdir <- normalizePath(opt$out, mustWork = FALSE)
 dir.create(file.path(outdir, "per_group"), recursive = TRUE, showWarnings = FALSE)
 
 proj <- loadArchRProject(opt$project)

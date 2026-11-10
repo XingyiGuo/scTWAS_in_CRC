@@ -18,13 +18,19 @@ import os
 import numpy as np
 import pandas as pd
 
-IN = r"W:\VUMC_projects\scTWAS\VUMC_HTAN_scTWAS_genes_DE_support\data\scTWAS_ADSER_NL_collected_results.csv"
-OUT = r"W:\VUMC_projects\scTWAS\TF_genes_pathways\Figure4_TF_pathways\table"
+IN = os.environ.get(
+    "TF_TWAS_RESULTS",
+    r"W:\VUMC_projects\scTWAS\VUMC_HTAN_scTWAS_genes_DE_support\data\scTWAS_ADSER_NL_collected_results.csv",
+)
+OUT = os.environ.get(
+    "TF_SPECIFICITY_OUT", r"W:\VUMC_projects\scTWAS\TF_genes_pathways\Figure4_TF_pathways\table"
+)
 N_PERM = 10000
 SEED = 0
 
 df = pd.read_csv(IN)[["Dataset", "CellType", "gene_name"]].drop_duplicates()
 df["model"] = df.Dataset + "_" + df.CellType
+os.makedirs(OUT, exist_ok=True)
 
 per = df.groupby("gene_name").agg(n_models_detected=("model", "nunique"),
                                   n_cell_types=("CellType", "nunique"))

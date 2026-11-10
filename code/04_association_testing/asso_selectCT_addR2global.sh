@@ -26,15 +26,13 @@ set -euo pipefail
 # Arguments:
 #   1 = tissue/model group: NL or ADSER
 #   2 = cell type
-#   3 = optional config file; default = asso.config.txt beside this script
+#   3 = optional config file; default = config/asso.config.txt
 #
 # The selected model is tested against all GWAS cohorts listed in COHORTS
 # (currently EUR and Multi).
 # ==============================================================================
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-if [[ "$#" -lt 2 ]]; then
+if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
     echo "Usage: sbatch $(basename "$0") <NL|ADSER> <CELL_TYPE> [asso.config.txt]" >&2
     echo "Examples:" >&2
     echo "  sbatch $(basename "$0") NL ABS" >&2
@@ -44,10 +42,15 @@ fi
 
 REQUESTED_TISSUE="$1"
 REQUESTED_CT="$2"
-CONFIG_FILE="${3:-${SCRIPT_DIR}/asso.config.txt}"
+SCRIPT_DIR=${ASSO_SCRIPT_DIR:-${SLURM_SUBMIT_DIR:-$(dirname "${BASH_SOURCE[0]}")}}
+DEFAULT_CONFIG="${SCRIPT_DIR}/config/asso.config.txt"
+if [[ -f "${SCRIPT_DIR}/asso.config.txt" ]]; then
+    DEFAULT_CONFIG="${SCRIPT_DIR}/asso.config.txt"
+fi
+CONFIG_FILE="${3:-${DEFAULT_CONFIG}}"
 
 if [[ ! -f "${CONFIG_FILE}" ]]; then
-    echo "ERROR: config file not found: ${CONFIG_FILE}" >&2
+    echo "ERROR: config file not found: ${CONFIG_FILE}. Pass a config or set ASSO_SCRIPT_DIR." >&2
     exit 1
 fi
 
@@ -322,7 +325,6 @@ done
 
 n_run=0
 n_skip=0
-n_missing_model=0
 n_failed=0
 
 tissue="${REQUESTED_TISSUE}"
@@ -380,6 +382,11 @@ for cohort in "${COHORTS[@]}"; do
     echo "Output       : ${output_file}"
     echo "=============================================================================="
 
+    # Publish the result only after SPrediXcan and the metadata join succeed.
+    run_dir="$(mktemp -d "${ASSO_OUTPUT_DIR}/.${model_prefix}.${cohort}.XXXXXX")"
+    tmp_output="${run_dir}/result.csv"
+    trap 'rm -f -- "$tmp_output"; rmdir -- "$run_dir"' EXIT
+
     if "${PYTHON_BIN}" "${SPREDIXCAN}" \
         --model_db_path "${model_db}" \
         --covariance "${covariance}" \
@@ -390,18 +397,17 @@ for cohort in "${COHORTS[@]}"; do
         --non_effect_allele_column "${NON_EFFECT_ALLELE_COLUMN}" \
         --beta_column "${BETA_COLUMN}" \
         --pvalue_column "${PVALUE_COLUMN}" \
-        --output_file "${output_file}" \
+        --output_file "${tmp_output}" \
         --verbosity "${VERBOSITY}" \
         > "${log_file}" 2>&1
     then
-        echo "SPrediXcan completed: ${output_file}"
-
-        if append_model_r2 "${model_db}" "${output_file}"; then
+        if append_model_r2 "${model_db}" "${tmp_output}" &&
+            mv -f -- "${tmp_output}" "${output_file}"; then
             echo "DONE with R2 metadata: ${output_file}"
             n_run=$((n_run + 1))
         else
             status=$?
-            echo "FAILED to append R2 metadata (${status}): ${output_file}" >&2
+            echo "FAILED to finalize association (${status}): ${output_file}" >&2
             n_failed=$((n_failed + 1))
         fi
     else
@@ -410,6 +416,10 @@ for cohort in "${COHORTS[@]}"; do
         echo "  Log: ${log_file}" >&2
         n_failed=$((n_failed + 1))
     fi
+
+    rm -f -- "${tmp_output}"
+    rmdir -- "${run_dir}"
+    trap - EXIT
 done
 
 echo
@@ -418,7 +428,6 @@ echo "Association summary"
 echo "=============================================================================="
 echo "Completed runs : ${n_run}"
 echo "Skipped        : ${n_skip}"
-echo "Missing models : ${n_missing_model}"
 echo "Failed runs    : ${n_failed}"
 echo "Output dir     : ${ASSO_OUTPUT_DIR}"
 echo "Log dir        : ${LOG_DIR}"

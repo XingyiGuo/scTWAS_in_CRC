@@ -10,18 +10,16 @@ suppressPackageStartupMessages({
 # Cell types are read from COLOC_CONFIG$cell_types.
 #
 # Usage:
-#   Rscript 01a_coloc_ADSER_9cts_summarize.R coloc_peakSNP_ADSER.config.txt
-#
-# If no config is supplied, the script uses:
-#   coloc_peakSNP_ADSER.config.txt
+#   Rscript 01a_coloc_ADSER_9cts_summarize.R config/coloc_peakSNP_ADSER.config.txt
 # ==============================================================================
 
 args <- commandArgs(trailingOnly = TRUE)
 
-CONFIG <- if (length(args) >= 1) {
-  args[1]
-} else {
-  "coloc_peakSNP_ADSER.config.txt"
+CONFIG <- if (length(args) >= 1) args[1] else "coloc_peakSNP_ADSER.config.txt"
+if (!length(args) && !file.exists(CONFIG)) {
+  script_arg <- grep("^--file=", commandArgs(), value = TRUE)
+  script_dir <- dirname(sub("^--file=", "", script_arg[1]))
+  CONFIG <- file.path(script_dir, "config", CONFIG)
 }
 
 if (!file.exists(CONFIG)) {

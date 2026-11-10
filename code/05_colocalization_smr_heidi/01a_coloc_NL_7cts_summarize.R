@@ -8,15 +8,17 @@ suppressPackageStartupMessages({
 # Summarize coloc results across 7 NL cell types
 #
 # Usage:
-#   Rscript 02_coloc_NL_7cts_summarize.R coloc_peakSNP_NL.config.txt
-#
-# If no config is supplied, the script uses:
-#   coloc_peakSNP_NL.config.txt
+#   Rscript 01a_coloc_NL_7cts_summarize.R config/coloc_peakSNP_NL.config.txt
 # ==============================================================================
 
 args <- commandArgs(trailingOnly = TRUE)
 
 CONFIG <- if (length(args) >= 1) args[1] else "coloc_peakSNP_NL.config.txt"
+if (!length(args) && !file.exists(CONFIG)) {
+  script_arg <- grep("^--file=", commandArgs(), value = TRUE)
+  script_dir <- dirname(sub("^--file=", "", script_arg[1]))
+  CONFIG <- file.path(script_dir, "config", CONFIG)
+}
 
 if (!file.exists(CONFIG)) {
   stop("Config file not found: ", CONFIG)

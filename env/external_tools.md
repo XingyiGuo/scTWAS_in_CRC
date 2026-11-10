@@ -1,23 +1,19 @@
-# External command-line tools invoked by the deposited scripts
+# Software setup
 
-Counts are the number of deposited scripts that invoke each tool.
+Install the Python packages from [`python_requirements.txt`](python_requirements.txt).
+Use the R environment notes below and install the external tools for the sections you plan to run.
 
-| Tool | Scripts | Used for |
-|---|---|---|
-| Slurm (`sbatch`) | 19 | job submission on the Vanderbilt ACCRE cluster |
-| PEER | 17 | probabilistic estimation of expression residuals (covariate factors) |
-| tensorQTL | 13 | cis-eQTL mapping per chromosome |
-| PLINK | 9 | genotype conversion, LD reference construction |
-| BEDTools | 6 | interval operations on peak sets |
-| SMR (v1.4.2) | 5 | summary-data-based Mendelian randomisation with HEIDI |
-| MACS3 | 5 | peak calling, VUMC scATAC-seq |
-| MACS2 | 4 | peak calling, GSE201336 scATAC-seq |
-| BCFtools | 4 | VCF handling |
-| METAL | 4 | referenced in the GWAS meta-analysis context |
-| SAMtools | 2 | alignment file handling |
-| tabix | 1 | indexing |
-| GCTA | 1 | genotype utilities |
-| liftOver | 1 | coordinate conversion |
+| Tool | Used for |
+|---|---|
+| Slurm (`sbatch`) | Job submission on Vanderbilt ACCRE |
+| PEER and tensorQTL | Expression residualization and cis-eQTL mapping |
+| PLINK, BCFtools, GCTA and tabix | Genotype processing, indexing and LD references |
+| MACS2, MACS3, BEDTools and SAMtools | scATAC-seq peak calling and interval or alignment processing |
+| MetaXcan / S-PrediXcan | TWAS association testing |
+| SMR v1.4.2 | SMR–HEIDI tests |
+| METAL | Upstream GWAS meta-analysis |
+| liftOver | Coordinate conversion |
+| Node.js and npm | Figure 6 radial tree, with `d3` and `jsdom` |
 
 Versions: SMR v1.4.2 is named in the Methods. The remaining tools were used at the
 versions available in the cluster module environment over the analysis period and were not
@@ -26,10 +22,9 @@ Methods.
 
 ## R dependency locks
 
-- `renv.lock` -- the project-level lockfile from the ACCRE analysis environment. This is the
-  authoritative R package set; restore with `renv::restore()`. It was generated on
-  linux-rocky-9.8 / R-4.5 / x86_64-pc-linux-gnu, so the recorded package *records* are what
-  transfers; binaries are resolved per platform on restore.
-- `renv_GSE201336_scATAC.lock` -- the narrower lockfile that shipped with the GSE201336
-  scATAC-seq peak-calling pipeline.
-- `r_packages.txt` -- a human-readable summary of the same package set, grouped by purpose.
+- [`renv.lock`](renv.lock) records the project environment from ACCRE (Linux, R 4.5.0).
+  From the repository root, restore it with `renv::restore(lockfile = "env/renv.lock")`.
+- [`renv_GSE201336_scATAC.lock`](renv_GSE201336_scATAC.lock) records the separate
+  GSE201336 scATAC-seq environment. It pins different versions for 15 shared packages.
+- [`r_packages.txt`](r_packages.txt) lists R packages used by the scripts, including
+  packages outside the project lockfile.

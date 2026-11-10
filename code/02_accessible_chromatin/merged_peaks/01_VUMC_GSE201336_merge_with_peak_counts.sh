@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ###############################################################################
-# 03_VUMC_GSE201336_merge.sh
+# 01_VUMC_GSE201336_merge_with_peak_counts.sh
 #
 # Merge VUMC robust/chaining peak regions with GSE201336 peak regions.
 #
@@ -23,10 +23,6 @@ set -euo pipefail
 #
 #   Cell types available in GSE201336:
 #       ABS CT GOB STM TAC EE
-#
-# NOTE:
-#   GSE201336 Normal__EE.narrowPeak.bed was not listed/available, so EE is not
-#   included in the Normal cross-study merge.
 #
 # IMPORTANT:
 #   - No summit-centered +/-250 bp conversion.

@@ -1,19 +1,15 @@
 #!/usr/bin/env Rscript
-# 03 -- Reproducible peak set for every CELL TYPE, pooling cells across tissue
-#       conditions (normal + adenoma/polyp).  ArchR pseudo-bulk replicates -> MACS2
-#       -> iterative overlap merging.
+# 03 -- Call reproducible peaks from ArchR pseudobulk replicates with MACS2.
 #
-# DEFAULT for this project is --byCondition: a separate peak set per Condition x CellType,
+# The pipeline passes --byCondition to call separate peaks per Condition x CellType,
 # i.e. Normal__{STM,TAC,ABS,CT,GOB,EE} and Adenoma__{STM,TAC,ABS,CT,GOB,EE}.
 # Without --byCondition it instead builds one consensus set per cell type, pooling cells of
 # that type across conditions. Condition is kept as per-cell metadata either way.
 #
-#   Rscript 03_call_peaks.R --archr ./archr --conditions "Normal,Adenoma" --minCells 200
+#   Rscript 03_call_peaks.R --archr ./archr --conditions "Normal,Adenoma" --minCells 200 --byCondition
 #
 # NOTE ON TERMINOLOGY: in GSE201336, disease state "Polyp" == conventional adenoma. There
 # is no separate "adenoma" vs "polyp" axis in this dataset; both map to Condition "Adenoma".
-#
-# To instead keep peak sets split by condition (the old behaviour), pass --byCondition.
 #
 # Resources: ~6-10 h on 16 cores, ~64-96 GB RAM, ~150 GB scratch. Set TMPDIR to local SSD.
 

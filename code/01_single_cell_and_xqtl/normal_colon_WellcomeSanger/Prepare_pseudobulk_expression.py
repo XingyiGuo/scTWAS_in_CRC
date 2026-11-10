@@ -43,7 +43,9 @@ import numpy as np
 import pandas as pd
 
 
-DEFAULT_QTLS_DIR = "/data/l2_bioinfo1/liq17/LQ_frameworks/QTLS"
+DEFAULT_QTLS_DIR = Path("/data/l2_bioinfo1/liq17/LQ_frameworks/QTLS")
+if not DEFAULT_QTLS_DIR.is_dir():
+    DEFAULT_QTLS_DIR = Path(__file__).resolve().parents[2] / "lib" / "QTLS"
 
 DEFAULT_INPUT = (
     "/data/l2_bioinfo1/liq17/scTWAS/data/WellcomeSanger/expression/"
@@ -65,7 +67,7 @@ def parse_args():
     p.add_argument(
         "--input",
         default=DEFAULT_INPUT,
-        help="Gene x sample pseudobulk CSV/CSV.GZ. Default: ABS file.",
+        help="Gene x sample pseudobulk CSV/CSV.GZ. Default: GOB file.",
     )
     p.add_argument(
         "--gtf",

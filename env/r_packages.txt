@@ -1,4 +1,4 @@
-# R packages, derived from the library()/require() calls of the deposited code.
+# R packages used by the analysis scripts. This list includes packages outside renv.lock.
 # CRAN
 data.table, dplyr, tidyr, tibble, stringr, readr, ggplot2, ggrepel, patchwork, pheatmap,
 shadowtext, systemfonts, Matrix, optparse, R.utils, future, RhpcBLASctl, readxl, openxlsx,
@@ -14,19 +14,14 @@ Seurat, SeuratObject, Azimuth, BPCells, ArchR
 # R 4.5 was used for the single-cell work (the cohort annotation directory carried an
 # renv library for linux-rocky-9.8, R-4.5, x86_64-pc-linux-gnu). The renv library itself
 # is not deposited; only the lockfile-relevant package set is recorded here.
-<<<<<<< HEAD
-
 # Model training and association testing (sections 03-04)
 glmnet, sqldf, ACAT
 
-# TF motif logos (section 06)
+# TF motif logos
 JASPAR2024, TFBSTools, ggseqlogo
 
-# Differential expression, enrichment and public-cohort re-analysis (sections 07, 09, 10)
+# Differential expression, public-cohort re-analysis and enrichment
 DESeq2, TCGAbiolinks, enrichR, remotes
 
-# Figure assembly (sections 06, 11)
+# Figure assembly
 scales, gridExtra, png
-
-=======
->>>>>>> 2de678c2bfef89f7c1f9743c89a392869bce8c37

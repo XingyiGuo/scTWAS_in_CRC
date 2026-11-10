@@ -1,77 +1,84 @@
-# 02 — Cell-type accessible-chromatin peak sets
+# Cell-type accessible chromatin
 
-ArchR arrow-file construction, label transfer and MACS peak calling per cell type for the
-VUMC scATAC-seq cohort (`vumc_scATAC/`, MACS3) and the Stanford HTAN GSE201336 cohort
-(`GSE201336_scATAC/`, ArchR plus MACS2), then the summit-based merge across cohorts
-(`merged_peaks/`). The merged cell-type peak sets define the candidate predictor variants
-for model training.
+This section calls epithelial scATAC-seq peaks in VUMC and GSE201336, then
+combines the cohorts by cell type and disease group. The released BEDs define
+the accessible regions used to select candidate variants for
+[GReX model training](../03_grex_model_training).
 
-## Position in the pipeline
+Use the [released peak BEDs](../../data/scATAC-seq/used_peaks) if you are starting
+at model training. The [peak-calling summaries](../../data/scATAC-seq/peak_calling_summaries)
+record the VUMC peak counts and overlap statistics.
 
-```
-(external data — see Inputs)
-        |
-        v
-   >>> 02_accessible_chromatin <<<
-        |
-        v
-03_grex_model_training  11_figures
-```
+## VUMC scATAC-seq
 
-The arrows above are the logical order of the published workflow, taken from the Methods (`docs/workflow.md`). The file-level links in *From other sections* and *Consumed by* below are the ones actually observed in the deposited code.
+Run these scripts from [vumc_scATAC](vumc_scATAC). Set the project paths in each
+script and provide hg38 BAMs split by condition and cell type, plus the hg38
+blacklist BED. This branch uses SAMtools, MACS3 and BEDTools.
 
-## Scripts, in run order (19 files)
+1. `01_VUMC_ATAC_MACS3_callpeak_parallel8.sh` filters the split BAMs, calls
+   peaks at MACS3 q < 0.01 and removes blacklisted intervals. For groups with
+   fewer than one million usable fragments, it also calls peaks in three 80%
+   subsamples and retains intervals supported by at least two runs. It writes
+   the per-group calls under `peaks/` and a `peak_calling_summary.tsv` that
+   includes cell counts from BAM barcode tags.
+2. `02_VUMC_ATAC_MACS3_calls_chaining_merge.sh` selects robust BEDs for the
+   deposited cohort. It uses subsampling-supported peaks for Normal TAC,
+   Adenoma ASC and TUF, and Serrated SSC and TUF, with blacklist-clean
+   full-depth calls for the other groups. It writes `robust_peak_regions/`
+   and combines adenoma and serrated intervals for the seven shared cell
+   types under `Adenoma_Serrated_chaining_merged_peaks/`. ASC and SSC retain
+   their separate robust BEDs.
 
-Ordered by sub-directory, then by the numeric prefix the script carries in its original working directory. Descriptions are the script's own header line; blank where the script has no header.
+## GSE201336 scATAC-seq
 
-| # | File | Lang | What it does | Declared display item |
-|---|---|---|---|---|
-| 1 | `GSE201336_scATAC/01_build_arrows.R` | R | 01 -- Build ArchR Arrow files from GSE201336 fragment files. Arrow names are set to the authors' ATAC_Sample IDs (e.g. |  |
-| 2 | `GSE201336_scATAC/02_relabel.R` | R | 02 -- Re-label Becker et al. scATAC epithelial cells into the Chen/Lau (Cell 2021) nomenclature and attach sample metadata. |  |
-| 3 | `GSE201336_scATAC/02_relabel_and_transfer.R` | R | 02 -- Re-label Becker et al. scATAC epithelial cells into the Chen/Lau (Cell 2021) nomenclature, and recover the adenoma-specific (ASC) population… |  |
-| 4 | `GSE201336_scATAC/03_call_peaks.R` | R | 03 -- Reproducible peak set for every CELL TYPE, pooling cells across tissue conditions (normal + adenoma/polyp). |  |
-| 5 | `GSE201336_scATAC/03_call_peaks.sbatch` | Slurm |  |  |
-| 6 | `GSE201336_scATAC/04_export_peaks.R` | R | 04 -- Export the reproducible peaks to BED, the union peak set, and a pseudobulk accessibility matrix (broken out by Condition x CellType). |  |
-| 7 | `GSE201336_scATAC/04_export_peaks.sbatch` | Slurm |  |  |
-| 8 | `GSE201336_scATAC/05_GSE201336_WellcomeSanger_peak_calling_summary.sh` | Shell |  |  |
-| 9 | `GSE201336_scATAC/build_manifest.py` | Python | Build GSE201336_atac_manifest.csv joining GEO GSM accessions to Becker et al. sample metadata. |  |
-| 10 | `GSE201336_scATAC/check_annotation_join.R` | R | PRE-FLIGHT CHECK -- run this before 01/02. Costs seconds; saves hours. |  |
-| 11 | `GSE201336_scATAC/macs2_wrapper.sh` | Shell |  |  |
-| 12 | `GSE201336_scATAC/run_pipeline.sbatch` | Slurm |  |  |
-| 13 | `merged_peaks/01_VUMC_GSE201336_merge_with_peak_counts.sh` | Shell |  |  |
-| 14 | `vumc_scATAC/01_VUMC_ATAC_MACS3_callpeak_parallel8.sh` | Shell |  |  |
-| 15 | `vumc_scATAC/01b_VUMC_ATAC_prepare_Normal_ready_peaks.sh` | Shell |  |  |
-| 16 | `vumc_scATAC/01c_VUMC_add_cellcounts_to_peak_calling_summary.sh` | Shell |  |  |
-| 17 | `vumc_scATAC/02_VUMC_ATAC_MACS3_calls_chaining_merge.sh` | Shell |  |  |
-| 18 | `vumc_scATAC/02_VUMC_ATAC_MACS3_calls_summitmerge_with_summit500.sh` | Shell |  |  |
-| 19 | `vumc_scATAC/03_VUMC_GSE201336_merge.sh` | Shell |  |  |
+Use the ArchR environment in [the GSE201336 R lockfile](../../env/renv_GSE201336_scATAC.lock),
+the hg38 genome package and MACS2. Stage the GEO fragment files in `WORK/fragments/`
+with names beginning `<GSM>_` and ending `_fragments.tsv.gz`. Also stage these
+annotation inputs in `WORK`:
 
-## Inputs
+- `epithelial_celltypes_atac.tsv` with `Cell` and `CellType` columns. Cell IDs
+  use the `<ATAC_Sample>#<barcode>` format.
+- `lau_label_map.csv` with `BeckerATAC` and `LauLabel` columns.
 
-**Not produced anywhere in this deposit** (2) — cohort data, public resources, or output of a step that is not deposited:
+Run `build_manifest.py` from `WORK` to create
+`GSE201336_atac_manifest.csv`. Use `check_annotation_join.R` to check the
+annotation sample names against that manifest before building Arrow files.
 
-- `HuBMAPCellAnnotations_hubmap_colon_epithelial.tsv`
-- `all_samples_cell_types_projections.csv`
-
-## Outputs
-
-| File | Written by | Consumed by |
+| Order | Script | Handoff |
 |---|---|---|
-| `adenoma_label_transfer_Lau.csv` | `GSE201336_scATAC/02_relabel_and_transfer.R` | — (terminal) |
-| `celltype_counts_lau.csv` | `GSE201336_scATAC/02_relabel.R` | — (terminal) |
-| `peak_by_condition_celltype_cpm.csv.gz` | `GSE201336_scATAC/04_export_peaks.R` | — (terminal) |
-| `peak_calling_group_sizes.csv` | `GSE201336_scATAC/03_call_peaks.R` | — (terminal) |
-| `peak_summary_by_group.csv` | `GSE201336_scATAC/04_export_peaks.R` | — (terminal) |
-| `union_peakset_epithelial.rds` | `GSE201336_scATAC/04_export_peaks.R` | — (terminal) |
+| 1 | `01_build_arrows.R` | Matches fragments by GSM accession, names the Arrow files with the annotation sample IDs, and saves `archr/proj_all_cells`. |
+| 2 | `02_relabel.R` | Joins the epithelial annotations, applies the Lau label map, and saves `archr/proj_epithelial_lau`. The six retained lineages used for the merge are ABS, CT, EE, GOB, STM and TAC. |
+| 3 | `03_call_peaks.R` | Calls reproducible peaks from ArchR pseudobulk replicates with MACS2. Pass `--byCondition --conditions Normal,Adenoma` to produce the condition-specific groups used in the merge. The script saves `archr/proj_epithelial_peaks` and `peak_calling_group_sizes.csv`. |
+| 4 | `04_export_peaks.R` | Exports `peaks/per_group/{Condition}__{CellType}.narrowPeak.bed`, the union peak set and a pseudobulk accessibility matrix. |
+| 5 | `05_GSE201336_WellcomeSanger_peak_calling_summary.sh` | Reports cell counts, blacklist-clean peak counts and interval widths. This reporting step writes separate filtered BEDs under `blacklist_clean/`. |
 
-## How this file was built
+To run steps 1–4 together, submit from [GSE201336_scATAC](GSE201336_scATAC):
 
-Automatically generated 2026-10-19 from MANIFEST.csv, the Methods order in `docs/workflow.md`, and the file reads and writes parsed out of the deposited scripts themselves. The extraction reads only string literals and path variables that appear at a read or write call site, so three classes of file are invisible to it: paths assembled from shell variables (most `.sh` and `.sbatch` wrappers), paths built by string formatting at run time, and files handled by external tools that the scripts invoke rather than open themselves (tensorQTL, PLINK, MACS, SMR, PEER). The lists above are therefore a lower bound, not a complete inventory. `MANIFEST.csv` at the repository root is authoritative for the file list itself.
+```bash
+mkdir -p logs
+WORK=/path/to/staged/work sbatch run_pipeline.sbatch
+```
 
-## Added in this release
+Review the Slurm account and module settings first. Set `MACS2` to the
+absolute executable path if ArchR needs help locating it. The included
+`macs2_wrapper.sh` loads the original cluster environment and needs executable
+permissions if used as that path. The full wrapper uses a 200-cell cutoff per
+group. The standalone `03_call_peaks.sbatch` is configured for Normal only
+with a 100-cell cutoff, and `04_export_peaks.sbatch` exports the saved project.
+Check the group-size report and make sure all six cell types have BEDs for both
+conditions before merging.
 
-These files were merged in from the project repository after the first deposit was assembled, so they are not described in the run order above.
+## Cross-cohort merge
 
-`GSE201336_scATAC/01_build_arrows.R` is the newer copy that carries the GEO download URL for GSE201336.
+Run [the cross-cohort merge script](merged_peaks/01_VUMC_GSE201336_merge_with_peak_counts.sh)
+after setting its VUMC, GSE201336 and output directories. It pairs the VUMC
+robust Normal BEDs with the GSE201336 Normal exports, and the VUMC
+adenoma–serrated BEDs with the GSE201336 Adenoma exports. It reads the exported
+`per_group/` files directly.
 
-- `GSE201336_scATAC/01_build_arrows.R`
+For ABS, CT, EE, GOB, STM and TAC, the script unions the original interval
+boundaries with `bedtools merge -d 0`, joining overlapping and book-ended
+intervals. It writes separate normal and disease BEDs and
+`VUMC_GSE201336_merge_summary.tsv` with input paths, peak counts and overlap
+statistics. The released set also includes the VUMC-only Normal TUF, disease
+TUF, Adenoma ASC and Serrated SSC BEDs from the VUMC branch.

@@ -9,7 +9,12 @@
 #SBATCH --time=7-0:0:0
 #SBATCH --account=l2_bioinfo1
 
-#	conda activate tftwas_coloc
-# $1 <cellType> ABS
-# $2 <config.txt> /data/l2_bioinfo1/liq17/scTWAS/src/coloc_SMRHEIDI_HTAN_GSE266546_WellcomeSanger/coloc_peakSNP_NL.config.txt
-Rscript /data/l2_bioinfo1/liq17/scTWAS/src/coloc_SMRHEIDI_HTAN_GSE266546_WellcomeSanger/01_coloc_gwas_xqtl_sigSource_peakSNP.R $1 $2
+set -euo pipefail
+
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $0 <CT|all> <config>" >&2
+    exit 2
+fi
+
+SCRIPT_DIR=${COLOC_SMR_SCRIPT_DIR:-${SLURM_SUBMIT_DIR:-$(dirname "${BASH_SOURCE[0]}")}}
+exec Rscript "$SCRIPT_DIR/01_coloc_gwas_xqtl_sigSource_peakSNP.R" "$@"

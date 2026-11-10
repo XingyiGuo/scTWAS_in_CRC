@@ -1,37 +1,28 @@
 #!/usr/bin/env python3
 
+import argparse
 import os
-import pandas as pd
-import numpy as np
 
-BASE_DIR = (
+import numpy as np
+import pandas as pd
+
+DEFAULT_ASSOCIATION_DIR = (
     "/data/l2_bioinfo1/liq17/scTWAS/"
     "TWAS_HTAN_GSE266546_WellcomeSanger_res/"
-    "SPrediXcan_peakSNP_association/"
-    "Cauchy_Meta_NL_WellcomeSanger_NL"
-)
-
-SUMMARY_FILE = os.path.join(
-    BASE_DIR,
-    "HTAN_NL_WellcomeSanger_NL_CauchyMeta_summary_7celltypes_R2global_gt0.01.csv"
+    "SPrediXcan_peakSNP_association"
 )
 
 CELL_TYPES = ["ABS", "CT", "EE", "GOB", "STM", "TAC", "TUF"]
-
-OUT_SUMMARY = os.path.join(
-    BASE_DIR,
-    "HTAN_NL_WellcomeSanger_NL_significance_summary_7celltypes.csv"
-)
 
 
 def bool_to_label(x):
     return "Yes" if bool(x) else "No"
 
 
-def process_cell_type(ct, summary_row):
+def process_cell_type(base_dir, cohort, ct, summary_row):
     in_file = os.path.join(
-        BASE_DIR,
-        f"HTAN_NL_WellcomeSanger_NL_{ct}_peakSNP.EUR.CauchyMeta.csv"
+        base_dir,
+        f"HTAN_NL_WellcomeSanger_NL_{ct}_peakSNP.{cohort}.CauchyMeta.csv"
     )
 
     if not os.path.exists(in_file):
@@ -39,9 +30,10 @@ def process_cell_type(ct, summary_row):
 
     df = pd.read_csv(in_file)
 
+    meta_col = "META_P" if "META_P" in df.columns else f"META_{cohort}_P"
     required_cols = [
         "gene",
-        "META_EUR_P",
+        meta_col,
         "pvalue_HTAN_NL",
         "pvalue_WellcomeSanger_NL",
     ]
@@ -66,9 +58,9 @@ def process_cell_type(ct, summary_row):
         )
 
     # Bonferroni thresholds
-    meta_threshold = 0.05 / n_meta
-    htan_threshold = 0.05 / n_htan
-    wellcome_threshold = 0.05 / n_wellcome
+    meta_threshold = 0.05 / n_meta if n_meta else np.nan
+    htan_threshold = 0.05 / n_htan if n_htan else np.nan
+    wellcome_threshold = 0.05 / n_wellcome if n_wellcome else np.nan
 
     # ------------------------------------------------------------------
     # Per-gene significance annotation
@@ -78,8 +70,8 @@ def process_cell_type(ct, summary_row):
     df["WellcomeSanger_Bonferroni_threshold"] = wellcome_threshold
 
     df["meta_sig"] = (
-        df["META_EUR_P"].notna()
-        & (df["META_EUR_P"] < meta_threshold)
+        df[meta_col].notna()
+        & (df[meta_col] < meta_threshold)
     )
 
     df["VUMC_HTAN_GSE266546_sig"] = (
@@ -132,8 +124,8 @@ def process_cell_type(ct, summary_row):
     # Write annotated per-gene file
     # ------------------------------------------------------------------
     out_file = os.path.join(
-        BASE_DIR,
-        f"HTAN_NL_WellcomeSanger_NL_{ct}_peakSNP.EUR."
+        base_dir,
+        f"HTAN_NL_WellcomeSanger_NL_{ct}_peakSNP.{cohort}."
         f"CauchyMeta.significance_annotated.csv"
     )
     df.to_csv(out_file, index=False)
@@ -196,10 +188,27 @@ def process_cell_type(ct, summary_row):
 
 
 def main():
-    if not os.path.exists(SUMMARY_FILE):
-        raise FileNotFoundError(f"Missing summary file: {SUMMARY_FILE}")
+    parser = argparse.ArgumentParser(description="Annotate normal-colon ACAT significance.")
+    parser.add_argument("cohort", choices=("EUR", "Multi"), nargs="?", default="EUR")
+    args = parser.parse_args()
+    association_dir = os.environ.get("ASSO_OUTPUT_DIR", DEFAULT_ASSOCIATION_DIR)
+    base_dir = os.path.join(association_dir, f"Cauchy_Meta_NL_WellcomeSanger_NL_{args.cohort}")
+    summary_file = os.path.join(
+        base_dir,
+        f"HTAN_NL_WellcomeSanger_NL_{args.cohort}_CauchyMeta_summary_7celltypes_R2global_gt0.01.csv",
+    )
+    if args.cohort == "EUR" and not os.path.exists(summary_file):
+        legacy_dir = os.path.join(association_dir, "Cauchy_Meta_NL_WellcomeSanger_NL")
+        legacy_summary = os.path.join(
+            legacy_dir, "HTAN_NL_WellcomeSanger_NL_CauchyMeta_summary_7celltypes_R2global_gt0.01.csv"
+        )
+        if os.path.exists(legacy_summary):
+            base_dir, summary_file = legacy_dir, legacy_summary
 
-    summary = pd.read_csv(SUMMARY_FILE)
+    if not os.path.exists(summary_file):
+        raise FileNotFoundError(f"Missing summary file: {summary_file}")
+
+    summary = pd.read_csv(summary_file)
 
     required_summary_cols = [
         "Cell_type",
@@ -229,16 +238,19 @@ def main():
                 f"More than one summary row found for cell type {ct}."
             )
 
-        results.append(process_cell_type(ct, row))
+        results.append(process_cell_type(base_dir, args.cohort, ct, row))
 
+    out_summary = os.path.join(
+        base_dir, "HTAN_NL_WellcomeSanger_NL_significance_summary_7celltypes.csv"
+    )
     out_summary_df = pd.DataFrame(results)
-    out_summary_df.to_csv(OUT_SUMMARY, index=False)
+    out_summary_df.to_csv(out_summary, index=False)
 
     print("\n" + "=" * 70)
     print("7-cell-type significance summary")
     print("=" * 70)
     print(out_summary_df.to_string(index=False))
-    print(f"\nSummary written to: {OUT_SUMMARY}")
+    print(f"\nSummary written to: {out_summary}")
 
 
 if __name__ == "__main__":

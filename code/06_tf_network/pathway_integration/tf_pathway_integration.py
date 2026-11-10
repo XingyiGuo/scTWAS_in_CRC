@@ -22,9 +22,11 @@ import matplotlib.pyplot as plt
 from scipy.stats import hypergeom
 from statsmodels.stats.multitest import multipletests
 
-XL = r"W:\VUMC_projects\scTWAS\TF_genes_pathways\NL_ADSER_cell_genes_EnrichR.xlsx"
-NET = r"L:\CRC51TF-scTWASgenes\TF_network_analysis"
-OUT = r"L:\CRC51TF-scTWASgenes\Figure4_TF_pathways"
+XL = os.environ.get(
+    "TF_ENRICHR_XLSX", r"W:\VUMC_projects\scTWAS\TF_genes_pathways\NL_ADSER_cell_genes_EnrichR.xlsx"
+)
+NET = os.environ.get("TF_NETWORK_DIR", r"L:\CRC51TF-scTWASgenes\TF_network_analysis")
+OUT = os.environ.get("TF_PATHWAY_OUT", r"L:\CRC51TF-scTWASgenes\Figure4_TF_pathways")
 DS2TIS = {"NL": "Normal", "ADSER": "Adenoma"}
 
 # ---------------------------------------------------------------- load
@@ -46,7 +48,7 @@ tfs_by_gene = sig.groupby(["tissue", "cell_type", "gene"]).TF.apply(set).to_dict
 
 # ------------------------------------------------- per-term and per-gene scoring
 rows, gene_rows, tp_rows = [], [], []
-for r in enr.itertuples():
+for r in enr.rename(columns={"Adjusted.P.value": "EnrichR_adjP"}).itertuples(index=False):
     tis, ct = DS2TIS[r.Dataset], r.CellType
     pg = [g for g in str(r.Genes).split(";") if g]
     U, L = uni.get((tis, ct), set()), linked.get((tis, ct), set())
@@ -66,7 +68,7 @@ for r in enr.itertuples():
     M, n, N, k = len(U), len(L), len(pg_in), len(set(lk) & U)
     allTF = sorted({t for g in pg for t in tfs_by_gene.get((tis, ct, g), set())})
     rows.append(dict(Dataset=r.Dataset, CellType=ct, Source=r.Source, Term=r.Term,
-                     EnrichR_adjP=getattr(r, "_7"), n_pathway_genes=len(pg), n_in_universe=N,
+                     EnrichR_adjP=r.EnrichR_adjP, n_pathway_genes=len(pg), n_in_universe=N,
                      n_TF_linked=len(lk), frac_TF_linked=round(len(lk) / len(pg), 3),
                      n_leadvar_occupied=len(occ_g), n_dual_evidence=len(dual),
                      bg_frac_TF_linked=round(n / M, 3) if M else np.nan,
@@ -85,8 +87,11 @@ for r in enr.itertuples():
 path_tf = pd.DataFrame(rows)
 path_tf["hyper_q"] = multipletests(path_tf.hyper_p.fillna(1), method="fdr_bh")[1]
 genes_df = pd.DataFrame(gene_rows)
-tfp = pd.DataFrame(tp_rows)
-tfp["q"] = multipletests(tfp.p, method="fdr_bh")[1]
+tfp = pd.DataFrame(tp_rows, columns=[
+    "Dataset", "CellType", "Source", "Term", "TF", "n_shared",
+    "n_TF_targets", "n_pathway_genes", "p", "shared_genes",
+])
+tfp["q"] = multipletests(tfp.p, method="fdr_bh")[1] if len(tfp) else []
 
 # ---------------------------------------- collapse terms with identical gene sets
 g = genes_df.assign(dual=lambda d: d.TFs_dual != "", corr=lambda d: d.n_TF_corr > 0)
@@ -149,8 +154,11 @@ for (ds, ct), d in e.groupby(["Dataset", "CellType"]):
                          q=rep["Adjusted.P.value"], n_TFlinked=rep.n_TFlinked, TFs=rep.TFs, Genes=rep.Genes))
 P = pd.DataFrame(rows)
 P["nlq"] = -np.log10(P.q)
-CT_ORDER = ["STM", "TAC", "ABS", "GOB", "EE", "TUF", "CT"]
-PAL = dict(zip(CT_ORDER, ["#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B3", "#937860", "#DA8BC3"]))
+CT_ORDER = ["STM", "TAC", "ABS", "GOB", "EE", "TUF", "CT", "ASC", "SSC"]
+PAL = dict(zip(CT_ORDER, [
+    "#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B3", "#937860", "#DA8BC3",
+    "#637939", "#3182BD",
+]))
 P["cto"] = P.CellType.map({c: i for i, c in enumerate(CT_ORDER)})
 P = P.sort_values(["Dataset", "cto", "q"])
 

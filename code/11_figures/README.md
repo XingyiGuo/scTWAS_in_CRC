@@ -1,93 +1,119 @@
-# 11 — Figure assembly
+# Figure reproduction
 
-`manhattan/` renders the stacked per-cell-type Manhattan panels for the normal-colon and
-polyp model sets, in European-ancestry and multi-ancestry-only variants, with the panel A
-source-data extractor. `workflow/` draws the two analytic workflow schematics.
-`figure7_depmap_screens/` is the Figure 7 panel layout; note that it is a rendering
-function only, and its analysis caller is missing (see `known_gaps.md`).
+Use the current [figure captions](../manuscript_text/Li_etal_Figures_SupFigures_11062026.docx)
+for numbering. The requested supplementary figures are labelled **Extended Data**
+in that document. Older filenames use different numbers.
 
-## Position in the pipeline
+## Source data
 
+[SourceData.xlsx](SourceData.xlsx) contains the source values for Figures 2–7
+and Extended Data Figures 1 and 4–9. Its **Index** links to each data sheet
+and records the archive source and expected CSV path where applicable.
+Use the repository's
+[Python](../../env/python_requirements.txt) and [R](../../env/r_packages.txt)
+dependencies.
+
+| Figure | Renderer and input |
+|---|---|
+| 2, 3 | [Manhattan scripts](manhattan) from the archived plotted-gene tables with significance flags and Bonferroni cutoffs. |
+| 4a | [Model overlap triangle](orthogonal_support/multiomics_de_support/01_model_overlap_triangle.R) from the 546 gene–cell-type associations. |
+| 4b–i | [TF networks and enrichment](network_figures/published_panels) from the correlation and lead-variant occupancy tables. |
+| 5a–c | [Grouped bars](orthogonal_support/multiomics_de_support/04_de_support_grouped_bars.R), [ASC/SSC linkage](orthogonal_support/multiomics_de_support/02_asc_ssc_linkage.R), and [support bubbles](orthogonal_support/multiomics_de_support/05_de_support_bubble_heatmap.R). Panel c uses the WTA GeoMx results. |
+| 5d | [CosMx composition map](orthogonal_support/spatial_geomx_cosmx/plot_figure5d.py) from the archived coordinates and cell groups. |
+| 5e–j | [CosMx gene maps and paired plots](orthogonal_support/spatial_geomx_cosmx/redraw_figure5ej.py). The workbook has six per-cell sheets, a paired-patient table and a gene summary. |
+| 6 | [Radial tree](druggability) from the drug–target records. |
+| 7 | [DepMap and arrayed CRISPR panels](figure7_depmap_screens/make_figure7.py) from the archived analysis inputs. [Section 09](../09_functional_screens/README.md) documents the upstream analyses. |
+| Extended Data 1 and 4 | [UMAPs, peak counts and model R²](model_performance/plot_extended_data_1_4.py). The R² source includes both normal-colon cohorts and the polyp cohort. |
+| Extended Data 5 and 6 | [Multi-ancestry Manhattan scripts](manhattan) from the archived association tables with multi-ancestry-only highlights. |
+| Extended Data 7 | [TF evidence heatmaps](network_figures/published_panels/mkfigS1.py) using the Figure 4b–i inputs. |
+| Extended Data 8 | [TF occupancy and co-expression comparison](network_figures/published_panels/plot_extended_data_8.py) using the same inputs. The workbook identifies which panel values were reconstructed. |
+| Extended Data 9 | [iLINCS compound plot](druggability/plot_ilincs_compound_panel.py) from Supplementary Table 24. |
+
+## Render the figures
+
+Run from the repository root. Figures 5d–j and 6 can read the workbook
+directly. For the other scripts, export the required worksheets as **CSV UTF-8**
+to the paths listed in the workbook Index under your working directory. Keep
+the worksheet headers when exporting. The scripts for Figures 4 and 5 render
+individual panels. The final page layouts are archived as
+`Figure4_TF_Genes_Pathways.ai` and `Figure5_MultiOmics_Support.ai` under
+`W:/VUMC_projects/scTWAS/ms-guo/Figures`.
+
+```powershell
+$code = (Resolve-Path code/11_figures).Path
+$book = Join-Path $code 'SourceData.xlsx'
+$stage = (New-Item -ItemType Directory -Force scratch/figure_reproduction).FullName
+$out = Join-Path $stage 'rendered'
 ```
-04_association_testing  02_accessible_chromatin  01_single_cell_and_xqtl
-        |
-        v
-   >>> 11_figures <<<
-        |
-        v
-   (terminal: display items / supplementary tables)
+
+**Figures 2, 3 and Extended Data 5, 6.** Set `SCTWAS_MANHATTAN_DATA` to the
+corresponding CSV under `$stage/manhattan`. This route uses the saved plot
+coordinates and flags, and skips raw association and EnsDb processing.
+
+| CSV | R script under `$code/manhattan` |
+|---|---|
+| `Figure2.csv` | `Manhattan_NL_EUR.R` |
+| `Figure3.csv` | `Manhattan_ADSER_EUR.R` |
+| `ExtendedDataFigure5.csv` | `Manhattan_NL_Multi_EURnotSig_MultiSig_only.R` |
+| `ExtendedDataFigure6.csv` | `Manhattan_ADSER_Multi_EURnotSig_MultiSig_only.R` |
+
+```powershell
+$env:SCTWAS_MANHATTAN_DATA = "$stage/manhattan/Figure2.csv"
+$env:SCTWAS_FIGURE_OUT = $out
+Rscript "$code/manhattan/Manhattan_NL_EUR.R"
 ```
 
-The arrows above are the logical order of the published workflow, taken from the Methods (`docs/workflow.md`). The file-level links in *From other sections* and *Consumed by* below are the ones actually observed in the deposited code.
+**Figures 4a and 5a–c.** The plots and source-data exports go under
+`$stage/multiomics/figure`.
 
-## Scripts, in run order (12 files)
+```powershell
+$env:SC_TWAS_SUPPORT_ROOT = "$stage/multiomics"
+Rscript "$code/orthogonal_support/multiomics_de_support/01_model_overlap_triangle.R"
+Rscript "$code/orthogonal_support/multiomics_de_support/04_de_support_grouped_bars.R"
+Rscript "$code/orthogonal_support/multiomics_de_support/02_asc_ssc_linkage.R"
+Rscript "$code/orthogonal_support/multiomics_de_support/05_de_support_bubble_heatmap.R"
+```
 
-Ordered by sub-directory, then by the numeric prefix the script carries in its original working directory. Descriptions are the script's own header line; blank where the script has no header.
+**Figure 4b–i and Extended Data 7–8.** Run from the directory containing the TF CSVs.
+The script names retain the archive numbering and their output names follow
+the current manuscript.
 
-| # | File | Lang | What it does | Declared display item |
-|---|---|---|---|---|
-| 1 | `figure7_depmap_screens/build_figure7.py` | Python |  |  |
-| 2 | `manhattan/Manhattan_ADSER_EUR.R` | R | Manhattan plots for ADSER cell-type-specific TWAS (EUR only) Plotting rules: 1. Plot ALL tested EUR TWAS genes. |  |
-| 3 | `manhattan/Manhattan_ADSER_Multi_EURnotSig_MultiSig_only.R` | R | Manhattan plots for ADSER cell-type-specific TWAS (Multi ancestry) Plotting rules: 1. Plot ALL tested Multi-ancestry TWAS genes. |  |
-| 4 | `manhattan/Manhattan_NL_EUR.R` | R | Manhattan plots for HTAN_NL + WellcomeSanger_NL Cauchy meta-TWAS (EUR) Input files: HTAN_NL_WellcomeSanger_NL_{ct}_peakSNP.EUR.CauchyMeta.csv Cell typ. |  |
-| 5 | `manhattan/Manhattan_NL_Multi_EURnotSig_MultiSig_only.R` | R | Manhattan plots for HTAN_NL + WellcomeSanger_NL Cauchy meta-TWAS (Multi ancestry) Input files: HTAN_NL_WellcomeSanger_NL_{ct}_peakSNP.Multi.CauchyMeta. |  |
-| 6 | `manhattan/extract_panelA_sourcedata.R` | R | WHAT IT DOES Reads a Seurat .rds and writes the small cell-level table that Final_Viz_4panel.R needs in order to DRAW panel A itself: cell_id, UMAPHAR. |  |
-| 7 | `manhattan/extract_panelA_sourcedata.sh` | Shell |  |  |
-| 8 | `manhattan/run_umap_WS_allcells.sh` | Shell |  |  |
-| 9 | `model_performance/Fig_peaks_R2_violin.R` | R | PURPOSE TWO figures, one per model group, each one row x two columns: Figure 1 Normal colon a) scATAC-seq peaks per cell type (bar) b) global R^2 of t. | Figure 1; Figure 2; Supplementary Table 5 |
-| 10 | `umap_annotation/VUMC_NL/05_annotation_UMAP.R` | R | 05_annotation.R Annotate clusters using the dominant ORIGINAL cell type in each cluster. |  |
-| 11 | `umap_annotation/WellcomeSanger_NL/04_umap_epithelial_LauLabel_04c_filtered.R` | R | Wellcome Sanger healthy epithelium: BPCells -> Seurat -> three labelled UMAPs. |  |
-| 12 | `workflow/Fig_scTWAS_workflow_NL_ADSER.py` | Python |  | Supplementary Figure 2 |
+```powershell
+Push-Location "$stage/tf"
+python "$code/network_figures/published_panels/mkfig1.py"   # Figure 4b,c
+python "$code/network_figures/published_panels/mkfig2.py"   # Figure 4d,e
+python "$code/network_figures/published_panels/mkfig3.py"   # Figure 4f–i
+python "$code/network_figures/published_panels/mkfigS1.py"  # Extended Data 7
+python "$code/network_figures/published_panels/plot_extended_data_8.py" --out-dir $out
+Pop-Location
+```
 
-## Inputs
+**Figure 5d–j.**
 
-**Not produced anywhere in this deposit** (2) — cohort data, public resources, or output of a step that is not deposited:
+```powershell
+python "$code/orthogonal_support/spatial_geomx_cosmx/plot_figure5d.py" `
+  --input $book --out-dir $out
+python "$code/orthogonal_support/spatial_geomx_cosmx/redraw_figure5ej.py" `
+  --workbook $book --out-dir $out
+```
 
-- `05_Epithelial_cell_metadata_LauLabel.csv.gz`
-- `SupplementaryTables.xlsx`
+**Figure 6.** Step 01 builds the tree from the workbook. The Node.js renderer
+draws the SVG and step 02 exports PDF and PNG.
 
-## Outputs
+```powershell
+$env:SCTWAS_DRUGS_ROOT = "$stage/drugs"
+$env:SCTWAS_FIGURE_WORKBOOK = $book
+npm install --prefix "$stage/drugs" d3@7 jsdom@26
+python "$code/druggability/01_prepare_radial_tree.py"
+node "$code/druggability/05_render_radial_tree.mjs"
+python "$code/druggability/02_export_radial_tree.py"
+```
 
-| File | Written by | Consumed by |
-|---|---|---|
-| `04_umap_R_sessionInfo.txt` | `ell_and_xqtl/normal_colon_WellcomeSanger/04_umap_epithelial_LauLabel_revised.R` | — (terminal) |
-| `04c_fine_annotation_filter_counts.csv` | `umap_annotation/WellcomeSanger_NL/04_umap_epithelial_LauLabel_04c_filtered.R` | — (terminal) |
-| `ADSER_EUR_TWAS_R2gt0.01_Manhattan_Bonferroni_summary.csv` | `manhattan/Manhattan_ADSER_EUR.R` | — (terminal) |
-| `ADSER_EUR_TWAS_R2gt0.01_Manhattan_plotted_genes.csv` | `manhattan/Manhattan_ADSER_EUR.R` | — (terminal) |
-| `ADSER_Multi_TWAS_R2gt0.01_Manhattan_highlight_summary.csv` | `manhattan/Manhattan_ADSER_Multi_EURnotSig_MultiSig_only.R` | — (terminal) |
-| `ADSER_Multi_TWAS_R2gt0.01_Manhattan_plotted_genes.csv` | `manhattan/Manhattan_ADSER_Multi_EURnotSig_MultiSig_only.R` | — (terminal) |
-| `Fig_peaks_R2_violin_sessionInfo.txt` | `model_performance/Fig_peaks_R2_violin.R` | — (terminal) |
-| `HTAN_NL_WellcomeSanger_NL_EUR_CauchyMeta_7CT_Manhattan_Bonferroni_summary.csv` | `manhattan/Manhattan_NL_EUR.R` | — (terminal) |
-| `HTAN_NL_WellcomeSanger_NL_EUR_CauchyMeta_7CT_Manhattan_plotted_genes.csv` | `manhattan/Manhattan_NL_EUR.R` | — (terminal) |
-| `HTAN_NL_WellcomeSanger_NL_Multi_CauchyMeta_7CT_Manhattan_highlight_summary.csv` | `manhattan/Manhattan_NL_Multi_EURnotSig_MultiSig_only.R` | — (terminal) |
-| `HTAN_NL_WellcomeSanger_NL_Multi_CauchyMeta_7CT_Manhattan_plotted_genes.csv` | `manhattan/Manhattan_NL_Multi_EURnotSig_MultiSig_only.R` | — (terminal) |
-| `_R2_sourcedata.csv` | `model_performance/Fig_peaks_R2_violin.R` | — (terminal) |
-| `_peaks_sourcedata.csv` | `model_performance/Fig_peaks_R2_violin.R` | — (terminal) |
-| `_percelltype.csv` | `model_performance/Fig_peaks_R2_violin.R` | — (terminal) |
-| `_sampling.csv` | `umap_annotation/VUMC_NL/05_annotation_UMAP.R` | — (terminal) |
-| `cell_type_colors.csv` | `ell_and_xqtl/normal_colon_WellcomeSanger/04_umap_epithelial_LauLabel_revised.R` | — (terminal) |
-| `cluster_LauLabel_composition.csv` | `ell_and_xqtl/normal_colon_WellcomeSanger/04_umap_epithelial_LauLabel_revised.R` | — (terminal) |
-| `cluster_by_original_CellType_cb_annot_pct_res0.8.rm23_sub.csv` | `ell_and_xqtl/normal_colon_GSE266546/05_annotation_UMAP.R` | — (terminal) |
-| `cluster_by_original_CellType_cb_res0.8.rm23_sub.csv` | `ell_and_xqtl/normal_colon_GSE266546/05_annotation_UMAP.R` | — (terminal) |
-| `cluster_celltype_composition_res0.8.rm23_sub.csv` | `ell_and_xqtl/normal_colon_GSE266546/05_annotation_UMAP.R` | — (terminal) |
-| `cluster_dominant_celltype_res0.8.rm23_sub.csv` | `ell_and_xqtl/normal_colon_GSE266546/05_annotation_UMAP.R` | — (terminal) |
-| `cluster_majority_LauLabel.csv` | `ell_and_xqtl/normal_colon_WellcomeSanger/04_umap_epithelial_LauLabel_revised.R` | — (terminal) |
-| `cluster_reviewed_annotation_res0.8.rm23_sub.csv` | `ell_and_xqtl/normal_colon_GSE266546/05_annotation_UMAP.R` | — (terminal) |
-| `fine_annotation_mapping.csv` | `ell_and_xqtl/normal_colon_WellcomeSanger/04_umap_epithelial_LauLabel_revised.R` | — (terminal) |
-| `integrated_seurat_final2.res0.8.rm23_sub.rds` | `ell_and_xqtl/normal_colon_GSE266546/05_annotation_UMAP.R` | — (terminal) |
-| `integrated_seurat_final2_reviewed.res0.8.rm23_sub.rds` | `ell_and_xqtl/normal_colon_GSE266546/05_annotation_UMAP.R` | `explore_specimen_GCA.R` |
-| `integrated_seurat_final2_reviewed.res0.8.rm23_sub_metadata.csv` | `ell_and_xqtl/normal_colon_GSE266546/05_annotation_UMAP.R` | `explore_specimen_GCA.R` |
-| `umap_WellcomeSanger_epithelial_clusters_LauLabel_sourcedata.csv` | `ell_and_xqtl/normal_colon_WellcomeSanger/04_umap_epithelial_LauLabel_revised.R` | — (terminal) |
+**Figure 7 and Extended Data 1, 4, 9.**
 
-## How this file was built
-
-Automatically generated 2026-10-19 from MANIFEST.csv, the Methods order in `docs/workflow.md`, and the file reads and writes parsed out of the deposited scripts themselves. The extraction reads only string literals and path variables that appear at a read or write call site, so three classes of file are invisible to it: paths assembled from shell variables (most `.sh` and `.sbatch` wrappers), paths built by string formatting at run time, and files handled by external tools that the scripts invoke rather than open themselves (tensorQTL, PLINK, MACS, SMR, PEER). The lists above are therefore a lower bound, not a complete inventory. `MANIFEST.csv` at the repository root is authoritative for the file list itself.
-
-## Added in this release
-
-These files were merged in from the project repository after the first deposit was assembled, so they are not described in the run order above.
-
-`Final_Viz_4panel.R` and the model R-squared violin with peak barplots.
-
-- `Final_Viz_4panel.R`
-- `model_performance/Violin_ADSER_NL_EUR_R2gt0.01_with_peak_barplots.R`
+```powershell
+python "$code/figure7_depmap_screens/make_figure7.py" --data-dir "$stage/figure7" --out-dir $out
+python "$code/model_performance/plot_extended_data_1_4.py" --data-dir "$stage/models" --out-dir $out
+python "$code/druggability/plot_ilincs_compound_panel.py" `
+  --input "$stage/ilincs/ExtendedDataFigure9_Table24.csv" --out-dir $out
+```

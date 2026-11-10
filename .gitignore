@@ -12,9 +12,12 @@ Thumbs.db
 inhouse/
 tmp/
 scratch/
+manuscript_text/
 
 # large derived outputs are released through Zenodo, not git
 *.rds
 *.h5ad
 *.bam
 *.bam.bai
+*.docx
+*.xlsx

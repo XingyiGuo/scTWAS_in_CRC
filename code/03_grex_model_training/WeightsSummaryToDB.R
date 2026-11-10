@@ -1,6 +1,3 @@
-# conda activate twasguo
-library(sqldf)
-library("stringr")
 library("data.table")
 library("dplyr")
 library("DBI")
@@ -19,7 +16,7 @@ args <- commandArgs(trailingOnly = TRUE)
 # =============================================================================
 # I. Load configuration
 # Usage:
-#   Rscript TWAS_HTAN_GSE266546_WellcomeSanger/WeightsSummaryToDB.R 1 TWAS_HTAN_GSE266546_WellcomeSanger/HTAN_GSE266546_peakSNP.ADSER.config.txt
+#   Rscript WeightsSummaryToDB.R 1 config/HTAN_GSE266546_peakSNP.ADSER.config.txt
 # =============================================================================
 get_script_dir <- function() {
   full_args <- commandArgs(trailingOnly = FALSE)
@@ -48,12 +45,14 @@ read_strict_fread <- function(file_path, expected_cols) {
     cat("Warning: No valid", expected_cols, "column rows in", file_path, "\n")
     return(NULL)
   }
+  if (length(valid_lines) == 1L) return(NULL)
+
   texts <- vapply(valid_lines, function(x) paste(x, collapse = "\t"), character(1))
-  fread(input = paste(texts, collapse = "\n"))
+  fread(text = paste(texts, collapse = "\n"), header = TRUE)
 }
 
 if (length(args) < 1) {
-  stop("Usage: Rscript WeightsSummaryToDB_peakSNP.R <CT_index> [*.config.txt]")
+  stop("Usage: Rscript WeightsSummaryToDB.R <CT_index> [*.config.txt]")
 }
 
 if (length(args) >= 2) {
@@ -247,12 +246,6 @@ summary_csv <- file.path(
   output_dir,
   paste0(model_prefix, "_model_summaries.csv")
 )
-fwrite(
-  model_summary_unique,
-  summary_csv,
-  row.names = FALSE,
-  col.names = TRUE
-)
 
 # =============================================================================
 # III. Collect model weights
@@ -388,37 +381,33 @@ model_covars <- model_covars %>%
 model_covars <- model_covars[!is.na(model_covars$VALUE), ]
 model_covars_unique <- model_covars %>% distinct(GENE, RSID1, RSID2, .keep_all = TRUE)
 
-cov_file <- file.path(output_dir, paste0(model_prefix, "_cov.txt"))
-fwrite(model_covars_unique, cov_file, sep = " ", row.names = FALSE, col.names = TRUE)
-system2("gzip", c("-f", cov_file))
+cov_file <- file.path(output_dir, paste0(model_prefix, "_cov.txt.gz"))
+fwrite(model_covars_unique, cov_file, sep = " ", compress = "gzip")
+fwrite(model_summary_unique, summary_csv)
 
 # =============================================================================
 # V. Generate SPrediXcan SQLite DB
 # =============================================================================
-Summary <- model_summary_unique
-Weight <- model_weights_unique
 dbfile <- file.path(output_dir, paste0(model_prefix, ".db"))
 
-# Re-create the DB so rerunning the script does not fail on existing tables.
-if (file.exists(dbfile)) file.remove(dbfile)
+# Replace both tables together so a failed rerun preserves the existing model DB.
 db <- dbConnect(SQLite(), dbname = dbfile)
-on.exit(dbDisconnect(db), add = TRUE)
-dbWriteTable(conn = db, name = "extra", value = Summary, row.names = FALSE)
-dbWriteTable(conn = db, name = "weights", value = Weight, row.names = FALSE)
+extra_fields <- tryCatch(
+  dbWithTransaction(db, {
+    dbWriteTable(db, "extra", model_summary_unique, overwrite = TRUE, row.names = FALSE)
+    dbWriteTable(db, "weights", model_weights_unique, overwrite = TRUE, row.names = FALSE)
 
-# Verify the two requested performance columns were actually written.
-extra_fields <- dbListFields(db, "extra")
-required_extra_fields <- c("R2_global", "r_squared_global")
-missing_extra_fields <- setdiff(required_extra_fields, extra_fields)
-
-if (length(missing_extra_fields) > 0) {
-  stop(
-    "DB extra table is missing requested field(s): ",
-    paste(missing_extra_fields, collapse = ", ")
-  )
-}
+    fields <- dbListFields(db, "extra")
+    missing_fields <- setdiff(c("R2_global", "r_squared_global"), fields)
+    if (length(missing_fields) > 0) {
+      stop("DB extra table is missing field(s): ", paste(missing_fields, collapse = ", "))
+    }
+    fields
+  }),
+  finally = dbDisconnect(db)
+)
 
 cat("DB extra fields:", paste(extra_fields, collapse = ", "), "\n")
 cat("Wrote summary :", summary_csv, "\n")
-cat("Wrote cov     :", paste0(cov_file, ".gz"), "\n")
+cat("Wrote cov     :", cov_file, "\n")
 cat("Wrote DB      :", dbfile, "\n")

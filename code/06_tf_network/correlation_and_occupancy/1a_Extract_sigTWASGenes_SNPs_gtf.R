@@ -4,7 +4,7 @@
 # from either ADSER models or normal-colon (NL) models,
 # followed by a one-pass GWAS RSID lookup across chromosomes 1-22.
 #
-# No command-line arguments are required.
+# Set TF_NETWORK_GROUP=NL to extract the normal-colon models.
 #
 # Major speed improvements:
 #   1) Read the significant-gene file once.
@@ -20,10 +20,6 @@ suppressPackageStartupMessages({
   library(data.table)
 })
 
-# Set the random seed
-set.seed(20260909)
-
-source("/data/l2_bioinfo1/liq17/LQ_frameworks/GenoPhenoBasic.R")
 # Respect the CPUs allocated by SLURM. Outside SLURM, auto-detect CPUs.
 slurm_txt <- Sys.getenv("SLURM_CPUS_PER_TASK", unset = "")
 if (nzchar(slurm_txt)) {
@@ -32,12 +28,13 @@ if (nzchar(slurm_txt)) {
   available_cpus <- suppressWarnings(parallel::detectCores(logical = FALSE))
 }
 if (is.na(available_cpus) || available_cpus < 1L) available_cpus <- 1L
+if (.Platform$OS.type == "windows") available_cpus <- 1L
 
 # GENCODE v26 gene annotation (GRCh38/hg38)
-GTF_FILE <- "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf"
-
-# Basic gene annotation from the existing helper function.
-gtf_v26 <- get_gene_annotation_all(GTF_FILE)
+GTF_FILE <- Sys.getenv(
+  "TF_NETWORK_GTF",
+  "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf"
+)
 
 
 # -------------------------------------------------------------------------
@@ -246,7 +243,7 @@ message(
 # 1. Fixed settings
 # -------------------------------------------------------------------------
 
-test <- "ADSER"  # "NL" or "ADSER"
+test <- toupper(Sys.getenv("TF_NETWORK_GROUP", "ADSER"))
 
 if (test == "ADSER") {
 

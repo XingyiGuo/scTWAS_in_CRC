@@ -10,11 +10,11 @@ suppressMessages({
 # Prepare SMR + HEIDI inputs DIRECTLY from TWAS-significant genes.
 #
 # Usage:
-#   Rscript 02_SMR_HEIDI_inputs_targetTopEQTL_500kb.R ABS \
-#     SMR_HEIDI_NL_targetTopEQTL_500kb.config.txt
+#   Rscript 02_SMR_HEIDI_inputs_targetTopEQTL_500kb_directTWAS.R ABS \
+#     config/SMR_HEIDI_NL_targetTopEQTL_500kb.config.txt
 #
-#   Rscript 02_SMR_HEIDI_inputs_targetTopEQTL_500kb.R all \
-#     SMR_HEIDI_ADSER_targetTopEQTL_500kb.config.txt
+#   Rscript 02_SMR_HEIDI_inputs_targetTopEQTL_500kb_directTWAS.R all \
+#     config/SMR_HEIDI_ADSER_targetTopEQTL_500kb.config.txt
 #
 # For each TWAS-derived task (gene x cell type x GWAS cohort x eQTL source):
 #   1) define TSS +/- flank_length (default 500 kb)
@@ -24,7 +24,7 @@ suppressMessages({
 #   5) retain usable SNPs in the +/-500-kb region
 #   6) choose target SNP = smallest eQTL p-value among harmonized overlaps
 #   7) write gene-specific GWAS .ma, eQTL .esd/.flist, SNP list, target QC
-#   8) write a manifest consumed by run_SMR_HEIDI_targetTopEQTL_500kb.sh
+#   8) write a manifest consumed by 02b_run_SMR_HEIDI.sh
 #
 # IMPORTANT:
 #   TensorQTL slope and af are assumed ALT-oriented, exactly as in the coloc
@@ -34,8 +34,8 @@ suppressMessages({
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) < 2L) {
   stop(
-    "Usage: Rscript 02_SMR_HEIDI_inputs_targetTopEQTL_500kb.R ",
-    "<CT|all> <SMR_config.R>"
+    "Usage: Rscript 02_SMR_HEIDI_inputs_targetTopEQTL_500kb_directTWAS.R ",
+    "<CT|all> <config>"
   )
 }
 

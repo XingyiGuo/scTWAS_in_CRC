@@ -1,7 +1,7 @@
 # =============================================================================
 # TWAS configuration
 # Edit this file when switching analysis group, datasets, paths, or parameters.
-# Used by TWAS_modelbuilding.R and WeightsSummaryToDB.R.
+# Used by TWAS_modelbuilding_scTWAS.R and WeightsSummaryToDB.R.
 # =============================================================================
 
 TWAS_CONFIG <- list(
@@ -40,15 +40,14 @@ TWAS_CONFIG <- list(
   # ---------------------------------------------------------------------------
   paths = list(
     # PEER residual expression file. Its sample labels may be expression_id.
-    # TWAS_modelbuilding.R renames expression_id -> genotype_id using covariate_file.
+    # The trainer maps expression_id to genotype_id using the cell-type covariate file.
     expression_template = "{work_dir}/data/VUMC_HTAN/expression/ADSER_pseudobulk_expression_for_peer/{CT}/PEER_{CT}/pseudobulk_counts_{CT}.tpmlog2.qc.qn.rmlowcounts.inv.PEER_residuals.expression_id.csv.gz",
 
     # PLINK --recode A-transpose output. Sample IDs are read directly from .traw.
     genotype_template = "{work_dir}/data/VUMC_HTAN/genotype/plinkformat/COLONMAP_95.chr{chrom}.nodup.maf001.traw",
 
     # Covariate/sample-mapping files.
-    # Default is the N103 mapping used by ABS/CT/EE/GOB/STM/TAC/TUF.
-    # ASC and SSC use their own cell-type-specific mappings.
+    # Each polyp cell type uses its own covariate and sample-mapping file.
     covariate_file_by_celltype = list(
       ASC = "{work_dir}/data/VUMC_HTAN/expression/ADSER_pseudobulk_expression_for_peer/ASC/ASC.age_sex_tissue_geno5PCs.csv",
       SSC = "{work_dir}/data/VUMC_HTAN/expression/ADSER_pseudobulk_expression_for_peer/SSC/SSC.age_sex_tissue_geno5PCs.csv",
@@ -62,7 +61,6 @@ TWAS_CONFIG <- list(
     ),
 
     gene_annotation = "/data/l2_bioinfo1/liq17/LQ_references/gencode/gencode.v26.annotation.gtf",
-    helper_functions = "/data/l2_bioinfo1/liq17/LQ_frameworks/GenoPhenoBasic.R",
     output_dir_template = "{work_dir}/TWAS_HTAN_GSE266546_WellcomeSanger_res/{dataset_prefix}_{tissue}_{CT}_peakSNP"
   ),
 

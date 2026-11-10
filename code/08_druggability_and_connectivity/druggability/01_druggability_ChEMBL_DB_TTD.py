@@ -15,6 +15,7 @@ Outputs (under <ROOT>/Drugs):
   figure/Fig_scTWAS_druggability_sourcedata.csv
 """
 import re
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -25,6 +26,8 @@ ROOT = r"W:\VUMC_projects\scTWAS"
 XLSX = rf"{ROOT}\Drugs\Proteins_Drugs_20250321.xlsx"
 GENES = rf"{ROOT}\MultiOmics_DE_support\table\scTWAS_347genes_multisource_DE_support.csv"
 DEPMAP = rf"{ROOT}\MultiOmics_DE_support\data\scTWAS_347genes_DepMap_largeintestine.csv"
+if not Path(DEPMAP).is_file():
+    DEPMAP = rf"{ROOT}\Experiments\Archive\scTWAS_347genes_DepMap_largeintestine.csv"
 OUT_T = rf"{ROOT}\Drugs\table"
 OUT_F = rf"{ROOT}\Drugs\figure"
 
@@ -143,6 +146,8 @@ summary["n_genes"] = summary["n_genes"].fillna(0).astype(int)
 summary["pct_of_347"] = (100 * summary["n_genes"] / 347).round(1)
 assert summary["n_genes"].sum() == 347
 
+Path(OUT_T).mkdir(parents=True, exist_ok=True)
+Path(OUT_F).mkdir(parents=True, exist_ok=True)
 out.to_csv(rf"{OUT_T}\scTWAS_347genes_druggability_ChEMBL_DB_TTD.csv", index=False)
 sub.drop(columns=["gene_list"]).rename(columns={"gene_sym": "gene_name"}).sort_values(
     ["gene_name", "tier"], ascending=[True, False]).to_csv(
@@ -182,7 +187,8 @@ for y, n in enumerate(sA["n_genes"]):
              va="center", ha="left", fontsize=7)
 axA.set_xlim(0, 330)
 axA.set_xlabel("scTWAS risk genes (of 347)")
-axA.set_title("Most colorectal risk genes have no ligand on record; 44 have an approved drug",
+n_approved = int((out["max_tier"] == 5).sum())
+axA.set_title(f"Most colorectal risk genes have no ligand on record; {n_approved} have an approved drug",
               loc="left")
 
 # Panel B -- genes with an approved agent carrying a pharmacological action
@@ -205,7 +211,7 @@ axB.set_xlim(0, 27)
 axB.set_ylim(-0.8, len(pb) - 0.2)
 axB.set_xlabel("Approved agents annotated with a pharmacological action on the target")
 n_onc_b = int((pb["n_NCI_cancer_drugs"] > 0).sum())
-axB.set_title(f"25 genes are hit by an approved agent; {n_onc_b} of them by a listed "
+axB.set_title(f"{len(pb)} genes are hit by an approved agent; {n_onc_b} of them by a listed "
               "oncology drug (\u25b2)", loc="left")
 handles = [Patch(facecolor=DEP_COL[k], label=DEP_LAB[k]) for k in DEP_COL]
 handles.append(Patch(facecolor=UNSCORED, label="not scored in DepMap"))

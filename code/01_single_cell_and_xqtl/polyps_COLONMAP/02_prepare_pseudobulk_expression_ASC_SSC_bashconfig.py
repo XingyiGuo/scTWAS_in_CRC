@@ -71,6 +71,7 @@ import pandas as pd
 QTLS_FRAMEWORK_CANDIDATES = [
     "/v5000/data/l2_bioinfo1/liq17/LQ_frameworks/QTLS",
     "/data/l2_bioinfo1/liq17/LQ_frameworks/QTLS",
+    str(Path(__file__).resolve().parents[2] / "lib" / "QTLS"),
 ]
 
 QTLS_FRAMEWORK = None

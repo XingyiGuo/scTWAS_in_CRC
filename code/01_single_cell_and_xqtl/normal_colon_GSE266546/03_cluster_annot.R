@@ -1,9 +1,8 @@
 #!/usr/bin/env Rscript
-# 03_cluster_plots.R
+# 03_cluster_annot.R
 # ----------------------------------------------------------------------------
-# Loads the Harmony-integrated Seurat object, runs clustering, makes UMAP
-# panels (study / sample / condition / cluster), computes per-cluster
-# markers, and writes everything to ../results/.
+# Clusters the Harmony-integrated Seurat object, exports marker and QC
+# summaries, and saves the annotated checkpoint for subclustering.
 # ----------------------------------------------------------------------------
 options(bitmapType = "cairo")
 #install.packages("pheatmap", repos = "https://cloud.r-project.org")
@@ -141,40 +140,6 @@ a3<- table(obj$CellType_cb3, obj$celltype_annot) %>% as.data.frame() %>% group_b
 
 table(obj$cluster, obj$celltype_annot, useNA = "ifany")
 
-#obj$celltype_annot <- NA_character_
-#abs_clusters <- c( "1", "10", "11", "13", "14", "4", 
-#                   "17", "18", "19", "20", "21", "22", "24", "25", "27", "28", "30", "33", "4", "5", "6", "7", "8", "9")
-#obj$celltype_annot[as.character(obj$cluster) %in% abs_clusters] <- "ABS"
-#obj$celltype_annot[as.character(obj$cluster) == "23"] <- "TUF"
-#obj$celltype_annot[as.character(obj$cluster) == "26"]  <- "EE"
-#obj$celltype_annot[as.character(obj$cluster) %in% c("0", "31", "32")]  <- "TAC"
-#obj$celltype_annot[as.character(obj$cluster) %in% c("16", "2", "29", "3")] <- "GOB"
-#obj$celltype_annot[as.character(obj$cluster) %in% c("12")]  <- "CT"
-#obj$celltype_annot[as.character(obj$cluster) == "15"]  <- "STM" # STM 1604 TAC 1247
-
-#a3<- table(obj$CellType_cb3, obj$celltype_annot) %>% as.data.frame() %>% group_by(Var2) %>% arrange(desc(Freq), .by_group = TRUE)
-#write.csv(a3, file.path(RESULTS_DIR, "cluster_by_original_CellType_cb_annot_res1.2.csv"), row.names = FALSE)
-
-a4 <- obj@meta.data %>%
-  mutate(
-    cluster = as.character(cluster),
-    CellType_cb = as.character(CellType_cb),
-    CellType_cb3 = as.character(CellType_cb3),
-    celltype_annot = as.character(celltype_annot)
-  ) %>%
-  group_by(cluster, CellType_cb, CellType_cb3, celltype_annot) %>%
-  summarise(n_cells = n(), .groups = "drop") %>%
-  group_by(cluster) %>%
-  mutate(
-    cluster_total = sum(n_cells),
-    percent_within_cluster = round(100 * n_cells / cluster_total, 2)
-  ) %>%
-  arrange(as.numeric(cluster), desc(percent_within_cluster)) %>%
-  ungroup()
-
-# write.csv(a4, file.path(RESULTS_DIR, "cluster_by_original_CellType_cb_annot_pct_res0.8.rm23.csv"), row.names = FALSE)
-
-
 # save final object
 message(
   "    ", nrow(obj), " genes x ",
@@ -189,124 +154,7 @@ message(
   "    ", length(unique(obj$celltype_annot)), " annotated clusters, ",
   "    ", length(unique(obj$CellType_cb)), " original clusters, ")
 
-# saveRDS(obj, file.path(RESULTS_DIR, "integrated_seurat_final.res0.8.rm23.rds"))
-
-# write.csv(obj@meta.data, file.path(RESULTS_DIR, "integrated_seurat_final.res0.8.rm23_metadata.csv"), row.names = F)
-
-barcode_both <- data.frame(
-  barcode = rownames(obj@meta.data),
-  CellType_cb = obj$CellType_cb,
-  celltype_annot = obj$celltype_annot,
-  stringsAsFactors = FALSE
-)
-
-# write.csv(
-#   barcode_both,
-#   file.path(RESULTS_DIR, "barcode_original_annotation_res0.8.rm23.csv"),
-#   row.names = FALSE
-# )
-
-
-# Standard UMAPs
-# save_plot(DimPlot(obj, reduction = "umap_harmony", group.by = "study",     raster = FALSE),
-#           "02_umap_by_study_res0.8.rm23")
-# save_plot(DimPlot(obj, reduction = "umap_harmony", group.by = "batch",    raster = FALSE) + NoLegend(),
-#           "03_umap_by_sample_res0.8.rm23")
-# save_plot(DimPlot(obj, reduction = "umap_harmony", group.by = "sample_condition", raster = FALSE),
-#           "04_umap_by_condition_res0.8.rm23")
-# save_plot(DimPlot(obj, reduction = "umap_harmony", group.by = "cluster",
-#                   label = TRUE, raster = FALSE) + NoLegend(),
-#           "05_umap_by_cluster_res0.8.rm23")
-
-# for (res in c(0.8)) {
-#   col <- paste0("SCT_snn_res.", res)
-#   save_plot(DimPlot(obj, reduction = "umap_harmony", group.by = "cluster",
-#                     label = TRUE, raster = FALSE) + NoLegend() +
-#               ggtitle(paste0("Clusters @ res ", res)),
-#             paste0("05b_umap_clusters_res", res, ".rm23"))
-# }
-# save_plot(
-#   DimPlot(obj, reduction = "umap_harmony", group.by = "celltype_annot",
-#           label = TRUE, raster = FALSE) + NoLegend(),
-#   "05c_umap_manual_celltype_res0.8.rm23"
-# )
-
-
-
-
-
-## clean cols and save final objs
-new_cell_names <- colnames(obj)
-
-new_cell_names <- gsub("_h5ad_", "_", new_cell_names)
-new_cell_names <- sub("^h5ad_", "", new_cell_names)
-
-new_cell_names <- make.unique(new_cell_names)
-
-obj <- RenameCells(obj, new.names = new_cell_names)
-
-obj$CellType_cb2 <- NULL
-obj$CellType_cb3 <- NULL
-
-# saveRDS(obj, file.path(RESULTS_DIR, "integrated_seurat_final1.res0.8.rm23.rds"))
-# write.csv(obj@meta.data, file.path(RESULTS_DIR, "integrated_seurat_final1.res0.8.rm23_metadata.csv"), row.names = F)
-
-
-barcode_both <- data.frame(
-  barcode = rownames(obj@meta.data),
-  CellType_cb = obj$CellType_cb,
-  celltype_annot = obj$celltype_annot,
-  stringsAsFactors = FALSE
-)
-
-# write.csv(
-#   barcode_both,  file.path(RESULTS_DIR, "barcode_original_annotation1_res0.8.rm23.csv"),  row.names = FALSE)
-
+# Step 04 matches this checkpoint against merged.rds using the original cell IDs.
+saveRDS(obj, file.path(RESULTS_DIR, "integrated_seurat_final.res0.8.rm23.rds"))
 
 message("Done.  Outputs in: ", RESULTS_DIR)
-
-### write to count matrix
-DefaultAssay(obj) <- "RNA"
-
-#Layers(obj[["RNA"]])
-obj <- JoinLayers(obj, assay = "RNA")
-
-counts_mat <- GetAssayData(obj, assay = "RNA", layer = "counts")
-# saveRDS(counts_mat, file.path(RESULTS_DIR, "counts_matrix_res0.8.rm23.rds"))
-
-
-# Save MatrixMarket sparse matrix
-# Matrix::writeMM( counts_mat, file.path(RESULTS_DIR, "counts_matrix_sparse_res0.8.rm23.mtx"))
-
-# Save gene names
-# write.table(
-#   data.frame(gene = rownames(counts_mat)),
-#   file = file.path(RESULTS_DIR, "counts_matrix_sparse_res0.8.rm23.gene.tsv"),
-#   sep = "\t",
-#   quote = FALSE,
-#   row.names = FALSE,
-#   col.names = FALSE
-# )
-
-# Save cell/barcode names
-# write.table(
-#   data.frame(cell = colnames(counts_mat)),
-#   file = file.path(RESULTS_DIR, "counts_matrix_sparse_res0.8.rm23_barcodes.tsv"),
-#   sep = "\t",
-#   quote = FALSE,
-#   row.names = FALSE,
-#   col.names = FALSE
-# )
-
-#counts_df <- as.data.frame(as.matrix(counts_mat))
-#counts_df <- cbind(gene = rownames(counts_mat), counts_df)
-
-#write.table(
-#  counts_df,
-#  file = file.path(RESULTS_DIR, "counts_matrix_gse266HTAN_res0.8.tsv"),
-#  sep = "\t",
-#  quote = FALSE,
-#  row.names = FALSE
-#)
-
-

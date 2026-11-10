@@ -25,12 +25,14 @@ after them, and a second sheet carries the gene-level summary.
 Output: <ROOT>/Drugs/63_druggable_genes.xlsx  (+ .csv of both sheets)
 """
 import re
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
 ROOT = r"W:\VUMC_projects\scTWAS"
 XLSX = rf"{ROOT}\Drugs\Proteins_Drugs_20250321.xlsx"
 OLD = rf"{ROOT}\Drugs\43_druggable_genes.xlsx"
+OLD_AUDIT = rf"{ROOT}\Drugs\table\audit_43_druggable_genes_vs_ChEMBL_DB_TTD.csv"
 DRUG_TBL = rf"{ROOT}\Drugs\table\scTWAS_347genes_druggability_ChEMBL_DB_TTD.csv"
 OUT = rf"{ROOT}\Drugs\63_druggable_genes.xlsx"
 OUT_T = rf"{ROOT}\Drugs\table"
@@ -100,7 +102,14 @@ def indications(a, b):
 
 dd = pd.read_excel(XLSX, sheet_name="ChEMBL_DB_TTD")
 per_gene = pd.read_csv(DRUG_TBL)
-old43 = set(pd.read_excel(OLD, sheet_name="Sheet1", header=1)["Genes"].astype(str).str.strip())
+if Path(OLD).is_file():
+    old_genes = pd.read_excel(OLD, sheet_name="Sheet1", header=1)["Genes"]
+else:
+    audit = pd.read_csv(OLD_AUDIT)
+    old_genes = audit.loc[audit["in_43_druggable_genes_xlsx"].eq(True), "gene_name"]
+old43 = set(old_genes.dropna().astype(str).str.strip())
+if len(old43) != 43:
+    raise ValueError(f"Expected 43 genes in the legacy druggability list, found {len(old43)}")
 
 dd["record_Genes"] = dd["Genes"].astype(str)
 dd["gene_list"] = dd["record_Genes"].str.split(r"\s*[;|]\s*")
@@ -214,12 +223,13 @@ with pd.ExcelWriter(OUT, engine="openpyxl") as xw:
 rows.to_csv(rf"{OUT_T}\63_druggable_genes_drug_records.csv", index=False)
 summ.to_csv(rf"{OUT_T}\63_druggable_genes_summary.csv", index=False)
 
-nm = rows["Drug Brand Name"].astype(str).str.upper().str.replace(r"[^A-Z0-9]", "", regex=True)
+nm = rows["Drug Brand Name"].str.strip().str.upper().replace("", np.nan)
 appr = rows["Development stage (harmonised)"].eq("Approved drug")
 print("rows:", len(rows), "genes:", rows['Genes'].nunique(),
       "| new genes vs the 43:", sorted(set(rows['Genes']) - old43))
 print(summ["druggability_tier"].value_counts().to_string())
-print("distinct compounds:", nm.nunique(), "| approved:", nm[appr].nunique(),
+print("distinct drug names (trimmed, case-insensitive):", nm.nunique(),
+      "| approved:", nm[appr].nunique(),
       "| NCI oncology:", nm[rows['NCI Cancer Drugs'].astype(bool)].nunique())
 print("rows from complex/family records:", int(rows["Evidence scope"].eq("complex or family row").sum()),
       "| by source:", rows.Source.value_counts().to_dict())

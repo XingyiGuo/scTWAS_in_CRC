@@ -69,7 +69,7 @@ authors:
     # TODO add ORCID identifiers before release
 preferred-citation:
   type: article
-  title: "Single-cell transcriptome-wide association study in colorectal cancer"
+  title: "Single-cell transcriptome-wide association analysis reveals epithelial cell-specific genetic susceptibility to colorectal cancer"
   authors:
     - family-names: Li
       given-names: Qing
@@ -81,10 +81,14 @@ preferred-citation:
       given-names: Jifeng
     - family-names: Yuan
       given-names: Fangcheng
+    - family-names: Jeong
+      given-names: Eugene
     - family-names: Song
       given-names: Qingyuan
     - family-names: Yan
       given-names: Chao
+    - family-names: Chen
+      given-names: You
     - family-names: Choi
       given-names: Jungyoon
     - family-names: Xu
@@ -93,22 +97,32 @@ preferred-citation:
       given-names: Yu
     - family-names: Sheng
       given-names: Quanhu
+    - family-names: Wen
+      given-names: Wanqing
+    - family-names: Shrubsole
+      given-names: Martha J.
+    - family-names: Cai
+      given-names: Qiuyin
     - family-names: Shu
       given-names: Xiao-Ou
+    - family-names: Gao
+      given-names: Guimin
     - family-names: Singh
       given-names: Bhuminder
+    - family-names: Yin
+      given-names: Zhijun
     - family-names: Coburn
       given-names: Lori A.
-    - family-names: Wilson
-      given-names: Keith T.
     - family-names: Ciombor
       given-names: Kristen K.
     - family-names: Eng
       given-names: Cathy
+    - family-names: Bauer
+      given-names: Joshua A
     - family-names: Peters
       given-names: Ulrike
-    - family-names: Yin
-      given-names: Zhijun
+    - family-names: Wilson
+      given-names: Keith T.
     - family-names: Zheng
       given-names: Wei
     - family-names: Lau

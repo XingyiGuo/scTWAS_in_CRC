@@ -1,29 +1,30 @@
-# scTWAS in colorectal cancer
+# Single-cell transcriptome-wide association analysis reveals epithelial cell-specific genetic susceptibility to colorectal cancer
 
-Code and curated data for **"Single-cell transcriptome-wide association study in colorectal
-cancer"** (Li, Li, Lyu, Wang, Yuan, Song, Yan, Choi, Xu, Wang, Sheng, Shu, Singh, Coburn,
-Wilson, Ciombor, Eng, Peters, Yin, Zheng, Lau & Guo).
+Analysis code and resources for the study by Qing Li, Chao Li, and colleagues.
 
-This project investigates how inherited colorectal cancer (CRC) risk relates to gene
-regulation in specific epithelial cell types. The study combines single-cell RNA sequencing,
-matched genotypes, and chromatin accessibility to train models of genetically regulated
-expression (GReX) for seven epithelial populations in normal colorectal mucosa and nine in
-colorectal polyps. It integrates these models with European-ancestry and multi-ancestry CRC
-genome-wide association study (GWAS) summary statistics to prioritize susceptibility genes.
+The study uses single-cell transcriptome-wide association analysis (scTWAS) to investigate
+how inherited colorectal cancer (CRC) risk relates to gene regulation in normal and
+premalignant epithelium. It combines matched germline genotypes and single-cell transcriptomes
+from normal colorectal mucosa (381 donors) and polyps (84 donors), using cell-type-specific
+chromatin accessibility to select variants for genetically regulated expression models.
+Integration with European-ancestry and multi-ancestry CRC genome-wide association study
+(GWAS) results identified 546 gene–cell-type associations implicating 347 candidate
+susceptibility genes across seven normal and nine polyp epithelial populations.
 
-Follow-up analyses use colocalization and SMR–HEIDI to assess shared genetic signals,
-transcription factor networks to examine regulatory relationships, and independent
-expression, proteomic, and spatial datasets to assess molecular support. Drug-target
-annotation, DepMap dependency scores, and arrayed CRISPR–Cas9 screens evaluate druggability
-and functional effects.
+Follow-up analyses assessed shared genetic signals through colocalization and SMR–HEIDI
+and mapped cell-type-specific transcription factor networks using co-expression and
+ChIP-seq evidence. Multi-omics analyses supported dysregulation of 233 candidate genes.
+Drug-target annotation identified 63 potentially druggable genes, and the combined
+DepMap and CRISPR–Cas9 analyses implicated 35 genes in CRC cell viability.
 
 ## Study overview
 
 [![Figure 1. Study design and analysis workflow for scTWAS in colorectal cancer](Figure1.png)](Figure1.png)
 
-**Figure 1. Study design and analysis overview.** Panel a shows model training and
-association testing. Panels b–e summarize the regulatory, multi-omics, drug-target, and
-functional follow-up analyses.
+**Figure 1. Study design and analytical framework.** Panel a follows the workflow from
+single-cell data and chromatin-based variant selection through expression model training,
+scTWAS, and genetic follow-up. Panels b–e show transcription factor networks, multi-omics
+and spatial support, drug-target annotation, and cancer dependency and experimental tests.
 
 ## Layout
 
